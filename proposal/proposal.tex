@@ -1,0 +1,106 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[round]{natbib}
+\bibliographystyle{apa}
+\usepackage[english]{babel}
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, citecolor=black, linkcolor=black}
+\oddsidemargin=0cm
+\evensidemargin=0cm
+\topmargin=0cm
+\textwidth=6.5in
+\textheight=9.2in
+\vspace{8pt}
+\parskip=0.5cm
+\parindent=0cm
+\pagestyle{plain}
+\renewcommand*{\familydefault}{\sfdefault}
+
+\begin{document}
+
+\title{Detecting Income Level of Dutch Twitter Users\\using Stylometric Features}
+\author{L\'eon Melein, S2580861}
+\date{\today}
+\maketitle
+\section*{Abstract}Income prediction is a relatively undiscovered aspect of author profiling. Early research on English-speaking Twitter users linked to occupations and average incomes has been promising, but there is no comparable research for Dutch speakers yet. We want to find out to what extent profiling can predict the income level of Dutch-speaking Twitter users. We do so by applying the methodology as \citet{flekova} at these users. Dutch-speaking users will be linked to their occupation and the average income for that occupation to establish ground truth and which, if any, stylometric features correlate significantly with income.
+\newpage
+
+\section{Introduction and background}
+(i) Include here your motivation to do the research you propose. (main area, subarea, problem statement, most important references)\\
+(ii) End this section with your research question. (your research question, clearly specified)
+\begin{itemize}
+\item Main area: author profiling
+\item Sub area: profiling on social media
+\item Problem statement:
+\begin{itemize}
+\item Customer relations are more and more moving online. People want to be helped fast and without giving a lot of information, they expect companies to "know" them.
+\item Companies want to know their customers so they don't need to ask a lot of information and can provide relevant information and offers. 
+\item Income can be a key factor because it can help in determining which products a customer already has and in which it is likely interested. 
+\item An example: a cable company customer with a low income probably has a low tier service package and will only be interested in cheap(er) options or options with significant extra value. Knowing this, offering them an expensive movie channel bundle - something which is nice to have, but isn't really of much value - doesn't really make sense.
+\end{itemize}
+\item Most important references
+\begin{itemize}
+\item{\citet{flekova}}
+\end{itemize}
+
+\item Research question
+\begin{itemize}
+\item{To what extent is it possible to accurately predict the income level of Dutch Twitter Users and which stylometric features are predictive?}
+\end{itemize}
+\end{itemize}
+
+
+\section{General approach}
+(i) Specify the approach you adopt in order to execute your research (i.e., to answer your research question) successfully.\\
+(ii) Describe your data collection, the corpus of input data (amount and type(s) of data), the way you will obtain it, and how you intend to use it.\\(iii) Describe your labels and data representation/features (amount and label(s), type of data features). Also describe any additional annotations or data resources you may use.\\
+(iv) Describe the way you intend to use your data as explicitly as possible, including the way you intend to pre-process your data.
+\begin{itemize}
+\item Approach
+\begin{itemize}
+\item Collect Dutch Twitter profiles including tweets, link them to their occupation and label them with the respective average income
+\item Extract features from tweets using software
+\item Train a machine learning model using some of the extracted feature vectors as a training set
+\subitem Question: do I want to turn this into a classification or regression task? Predicting exact incomes might yield inaccurate results, the authors of  \cite{flekova} chose to turn it into a classification task. It might be wise to follow that choice and adhere to the categories the Dutch Bureau of Statistics (CBS) uses in income classification (yearly income: 0-10.000, 10-20.000, 20-30.000, 30-40.000, 50.000 euros or more).
+\item Test the model with multi-fold validation
+\end{itemize}
+
+\item Data collection and use
+\begin{itemize}
+\item The authors of the paper used an English language corpus created by \cite{pietroA7}. I have to look into the full details of the collection method in that paper in order to evaluate if that method can be used for our purposes.
+\item Another option proposed last week was cross linking Twitter profiles with LinkedIn, in order to save time and establish relatively reliably what occupation a user has. Implementing this in an automated manner is hard, because LinkedIn closed off their machine readable search interface last autumn. Doing it by hand will cost a lot of time and looking at other options may therefore be wise.
+\end{itemize}
+
+\item Labels and features
+\begin{itemize}
+\item The labels for the Twitter users will be the average income for their occupation.
+\item I will largely use the same features that are used in \cite{flekova}, given that the specific feature or metric is available for Dutch. I will adhere to the feature groups that they've used: surface, readability, syntax and style. The exact features need to be determined.
+\end{itemize}
+
+\item Additional data
+\begin{itemize}
+\item I need a data set with occupations and their respective average income, so I can link Twitter profiles to the average income for their occupation, which enables us to establish ground truth.
+\item The Dutch Bureau of Statistics (CBS) has data on average yearly and hourly salary per industry following their own \textit{Standaard Bedrijfsindeling} (Standard Classification of Businesses), but it does not seem to provide more granular income statistics on first sight. They do have a Dutch implementation of the International Standard Classification of Occupations, created by the International Labour Organization (ILO). Therefore, I do suspect that there is more data available from CBS. I will contact them to make sure they have more detailed statistics on average income.
+\end{itemize}
+
+\item Data pre-processing and usage
+\begin{itemize}
+\item \cite{pietroA7} used the Trendminer pipeline to prepare their corpus. As we will be handling Dutch tweets it may be wise to employ a different pipeline to prepare the tweets. There is a pipeline available that is used with the Dutch-language \textit{twitter2} corpus of the University of Groningen, which may be usable for our purposes. 
+\end{itemize}
+\end{itemize}
+
+\section{Expected output and evaluation}(i) Indicate how your output data (results of your research) will look like.\\
+(ii) Specify the way you intend to evaluate your results.
+\begin{itemize}
+\item Output data
+\subitem Correlations between features and income level
+\item Evaluation
+\subitem Significance: the first step in determining if a feature has predictive power is the significance of that feature in determining the income level of a user.
+\subitem Strength of correlation: we can interpret \textit{Pearson's r} by the use of some rules of thumb if the relation is between a feature and income is linear. There are a number  rules of thumb like the ones proposed by \cite{cohen1988statistical}. 
+\end{itemize}
+
+\section{Literature}
+\bibliography{proposal}
+
+\end{document}
