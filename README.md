@@ -1,2 +1,4 @@
 # ba_thesis
-My Bachelor's Thesis - Seen in progress
+_Léon Melein, University of Groningen_
+
+My Bachelor's Thesis for Information Science
