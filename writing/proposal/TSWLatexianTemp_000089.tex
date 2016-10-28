@@ -53,7 +53,7 @@ I will build a classifier that uses the predictive features. With that classifie
 Afterwards, I will evaluate the performance of the classifier. Details of the expected output and evaluation of the results follows in the next section.
 
 \subsection{Data collection and usage}
-As discussed earlier, the primary data set for my research will be a corpus of Twitter posts, categorized on the income level of its author. I will extract the users from the Dutch-language twitter2 corpus of the University of Groningen. By using the provided tweet2tab tool to extract the id, username, real name and biography of each post's author, I will create a file with Dutch-speaking Twitter users that we can use for further processing. 
+As discussed earlier, the primary data set for my research will be a corpus of Twitter posts, categorized on the income level of its author. I will extract the users from the Dutch-language twitter2 corpus of the University of Groningen. By using the provided tweet2tab tool to extract the id, username, real name and biography of each tweet's author, I will create a file with Dutch-speaking Twitter users that we can use for further processing. 
 
 For each extracted user, we try to find their occupation. We use distant supervision to find these occupations. Using an existing list of occupational titles from \cite{codelijsten} we look for an occupation in each user's biography. This list also holds the corresponding class from the International Standard Classification of Occupations (ISCO) \citep{isco}.  With that class, we can look up the average yearly income in an existing list from \cite{uurlonen}. The details of these occupational classes will be discussed in the following subsection.
 
@@ -61,40 +61,31 @@ Afterwards, we are left with users labeled with their occupation and the average
 
 After the users are selected, I will divide them into their respective income classes. The exact classes are to be determined. \citet{flekova} used two groups at some point in their research: $\leq$ \pounds 25.000 and $\geq$ \pounds 35.000). Statistics Netherlands use a six-way classification in their regular research: \euro 0 - \euro 10.000, \euro 10.000 - \euro 20.000, \euro 20.000 - \euro 30.000, \euro 30.000 - \euro 40.000, \euro 40.000 - \euro 50.000 and \euro 50.000 or more. I will explore both classifications and use them both in my research, if possible.
 
-Finally, when the users are divided in their respective income levels, their 500 latest Dutch posts are retrieved from Twitter using the REST API, retweets excluded. If a user has less than 500 Dutch self written posts, it will be discarded. The result of our data collection effort is corpus which is divided into directories for each income level. Each directory contains text files, which hold the posts for each user belonging to the income level. 
+Finally, when the users are divided in their respective income levels, their 500 latest Dutch posts are retrieved from Twitter using the REST API, retweets excluded. If a user has less than 500 Dutch self written tweets, it will be discarded. The result of our data collection effort is corpus which is divided into directories for each income level. Each directory contains text files, which hold the posts for each user belonging to the income level. 
 
-The amount of users in our corpus depends strongly on the successful labeling of our data. The exact amount of posts I will use to extract users will therefore depend on the yield of the labeling process. My first intention is to use a month's worth of posts to extract user.
+The amount of users in our corpus depends strongly on the successful labeling of our data. The exact amount of tweets I will use to extract users will therefore depend on the yield of the labeling process. My first intention is to use a month's worth of tweets to extract user.
 
 The corpus will be used to find stylometric features that are predictive of users' income levels. The extraction of features from the corpus will be discussed later on. After the discovery of such features, I will use the corpus to perform multifold cross validation of the classifier. The exact amount of validations is to be determined at a later time.
 
 \subsection{Labels, features and additional data}
-As already discussed in the subsection on data collection, each user included in our corpus is labelled with their average yearly income. To derive this income we use a three step process. First, we determine a user's occupation and the corresponding ISCO class. Second, we look up the average income for that class. As the average incomes in our data set are hourly, we need to multiply them with the average amount of worked hours per year to calculate the average yearly income. According to the \citet{hours} the average worked hours per year in the Netherlands are 1677. Finally, we label the user with its average yearly income.
+As already discussed in the subsection on data collection, each user included in our corpus is labelled with their average yearly income. To derive this income we use a three step process. First, we determine a user's occupation and the corresponding ISCO class. Second, we look up the average income for that class. As the average incomes in our data set are hourly, we need to multiply them with the average amount of worked hours per year to calculate the average yearly income. According to \citet{hours} the worked hours per year are 1677. Finally, we label the user with its average yearly income.
 
-We rely on two additional data sources for our labelling process. The occupational titles and their respective classes were derived from a file with occupational classes and example occupations provided by \citet{codelijsten}. The average yearly income per occupational class is derived from another file created by \citet{uurlonen}.
+We rely on two additional data sources for our labelling process. The occupational titles and their respective classes were derived from a file with occupational classes and example occupations provided by \citeit{codelijsten}. The average yearly income per occupational class is derived from another file created by \citet{uurlonen}.
 
-The ISCO classification contains four levels of classes, starting with nine very general classes and terminating in hundreds of very specific classes. The average hourly wages are only available for the first and second level of the classification. We use the second level to link our occupations to, as this provides the most specific income data available.
+The ISCO classification contains four levels of classes, starting with nine very general classes and terminating in hundreds of very specific classes. The average hourly wage is only available completely for the first and second level of the classification. We use the second level to link our occupations with, as this provides the most specific income data available.
 
-The features that will be used in this research will be the same as those used in \citet{flekova}, given that can be extracted from Dutch texts. I will discuss them per class.
+The features that will be used in this research will be the same as those used in \citet{flekova}, given that can be extracted from Dutch texts. I will discuss them further per class.
 
-The first group of features is surface. This group includes measures like average post length (in words and characters), average length of words used in the posts and the type-token ratio. These features should be relatively straightforward to implement. 
+The first group of features is surface. This group includes measures like average post length (in words and characters), average length of words used in the posts and the type-token ratio. These features should be relatively straightforward to implement. The second group.
 
-The second group is readability. This group includes measures like the Automatic Readability Index, the Flesch Reading Ease metric and the SMOG grade. These metrics were specifically built for English. At the time I am not sure if all metrics have Dutch counterparts. I will look for them, as these group of metrics performed best in the study by \citet{flekova}.
+\subsection{Data pre-processing and usage}
 
-The third group is syntax. This involves calculating the ratio of all parts-of-speech in a user's posts. In order to count the parts of speech, we need a parser that provides us with part-of-speech tags.
-
-The final group is style. This includes the amount of Named Entities in a user's posts, the ratio of standalone numbers and the ratio of hapax legomena. As with the first group, these features should be relatively straightforward to implement. 
-
-\subsection{Data pre-processing}
-As described in the previous subsection, all features are derived from our corpus. In order to calculate most features the posts need to be tokenized and non-word features like hashtags and hyperlinks must be removed. Furthermore, the posts must be parsed to get the parts-of-speech. I will use the Alpino parser to get these part-of-speech tags.
 
 \section{Expected output and evaluation}
 \subsection{Expected output}
-This research will have two outputs, one intermediate and one final. The intermediate output will be formed by the significance and correlation coefficient of our features. We use these outcomes to determine which features are predictive and should be used by our classifier. The features will be selected on significance and correlation strength. 
-
-The final output will be that of our classifier. The most important results will be precision and recall, as we need those to calculate the F1-score, their harmonic mean. We can use that, together with accuracy, to compare our classifier with our baseline. Furthermore, a confusion matrix and the support of each class will be included in order to interpret the results. 
-
 \subsection{Evaluation}
-In order to evaluate the classifier's performance a baseline is needed. As there is no established baseline yet, we will create a baseline by classifying all users as the most frequent class in our corpus. We will then compare the classifier to the new baseline in order to evaluate its performance and provide a full answer to our research question.
+\citet{cohen}
+
 
 \section{Literature}
 \bibliography{proposal}
