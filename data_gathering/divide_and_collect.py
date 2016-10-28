@@ -70,13 +70,12 @@ def collect(users):
     for key in users.keys():
         for user in users[key]:
             print(user, key)
-            print(type(user))
-            print(type(key))
             getTweets(int(user), key)
 
 
 def connectTwitter():
-    cred = json.load(open("private/credentials.json"))
+    path = os.path.expanduser("~/Desktop/Thesis/ba_thesis/data_gathering/private/credentials.json")
+    cred = json.load(open(path))
     twitter = TwitterSearch(access_token=cred["ACCESS_TOKEN"],access_token_secret=cred["ACCESS_TOKEN_SECRET"],
                             consumer_key=cred["CONSUMER_KEY"], consumer_secret=cred["CONSUMER_SECRET"])
     return twitter
@@ -84,13 +83,11 @@ def connectTwitter():
 
 def getTweets(userid, final_income_class):
     ts = connectTwitter()
-    directory = os.getcwd() + "/corpus/" + final_income_class
+    directory = os.path.expanduser("~/Desktop/Thesis/ba_thesis/data_gathering/corpus/" + final_income_class)
     filename = "{}.txt".format(userid)
 
-    print(userid, type(userid))
     # Convert user id to integer for right parsing
     twitter_user_order = TwitterUserOrder(userid)
-    print(twitter_user_order.create_search_url())
 
     try:
         # Get all tweets without RT's (max 3200)
@@ -103,12 +100,12 @@ def getTweets(userid, final_income_class):
                 if langid.classify(tweet['text'])[0] == "nl":
                     all_tweets.append(tweet)
 
-        print("Show 10 tweets:")
-        for tweet in all_tweets[0:10]:
-            print(tweet['text'])
+        #print("Show 10 tweets:")
+        #for tweet in all_tweets[0:10]:
+        #    print(tweet['text'])
 
-        print("")
-        print("total: {}".format(len(all_tweets)))
+        #print("")
+        #print("total: {}".format(len(all_tweets)))
 
         # If user has enough tweets, save tweets to file
         if len(all_tweets) > 500:
@@ -123,7 +120,6 @@ def getTweets(userid, final_income_class):
                     file_handler.write("{}\n".format(tweet['text']))
     except TwitterSearchException as twe:
         print(twe.args)
-
 
 
 with open("output_files/user_class_income.pickle", "rb") as file:

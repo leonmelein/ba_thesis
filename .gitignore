@@ -28,6 +28,7 @@ data_gathering/private/
 # User-specific stuff:
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/*
 
 # Sensitive or high-churn input_files:
 .idea/dataSources.ids
@@ -64,4 +65,5 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 /data_gathering/output_files/
+/data_gathering/corpus/
 /data_gathering/input_files/bio*
