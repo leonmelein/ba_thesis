@@ -6,6 +6,8 @@
 \usepackage[english]{babel}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{amsmath,amsfonts}
+\usepackage{eurosym}
 \hypersetup{colorlinks=true, urlcolor=blue, citecolor=black, linkcolor=black}
 \oddsidemargin=0cm
 \evensidemargin=0cm
@@ -34,14 +36,36 @@ An aspect of author profiling is income prediction. A potential use for these es
 
 An example: a cable company customer with a relatively low income probably has a low tier service package. He or she will only be interested in cheap(er) options or options that provide significant extra value, in comparison to their additional cost. Knowing this, offering an expensive movie channel package to this customer does not make a lot of sense. Such a package is nice to have, but isn't really of much value - unless the customer is a true movie addict.
 
-There has been some research on income prediction using author profiling on English language Twitter messages. \citet{flekova} looked at both age and income. By codifying stylistic variation into a large number of features, they tried to find a viable writing style-based predictor for age and income. Using this method, they found that readability metrics like the Flesch Reading Ease and the usage of pronouns correlate more strongly with income than age, among other things. The data set used in this study was created by \citet{pietro}. They labeled users with self-disclosed occupational titles extracted from their biography and the income for the extracted occupation in the United Kingdom, even if the user did not live there. Other studies use a second information source to get the occupation of a user  \citet{li} used this method to get the current employer of Twitter users. They cross-linked Twitter profiles with Google Plus profiles. From the Google Plus profile they gathered the current employer of a Twitter user. The link between both networks was formed by a link to the Twitter profile that users had added themselves on their Google Plus profiles.
+There has been some research on income prediction using author profiling on English language Twitter posts. \citet{flekova} looked at both age and income. By codifying stylistic variation into a large number of features, they tried to find a viable writing style-based predictor for age and income. Using this method, they found that readability metrics like the Flesch Reading Ease and the usage of pronouns correlate more strongly with income than age, among other things. The data set used in this study was created by \citet{pietro}. They labeled users with self-disclosed occupational titles extracted from their biography and the income for the extracted occupation in the United Kingdom, even if the user did not live there. Other studies use a second information source to get the occupation of a user  \citet{li} used this method to get the current employer of Twitter users. They cross-linked Twitter profiles with Google Plus profiles. From the Google Plus profile they gathered the current employer of a Twitter user. The link between both networks was formed by a link to the Twitter profile that users had added themselves on their Google Plus profiles.
 
 Despite the existing research into English-language Twitter users and their respective incomes, there is currently no comparable research for Dutch-language Twitter users. I will therefore focus my research on the following question: to what extent is it possible to accurately predict the income level of a Dutch Twitter user and which stylometric features are predictive?
 
 \section{General approach}
 \subsection{Overview}
+My research consists of two major parts. First, I will look into which features are predictive of income level. Afterwards,  I will look into actually predicting the income level of users. For both parts, I will need a corpus of Twitter posts, for which the author and their income is known. I will discuss the way I intend to build this corpus in the next subsection. 
 
-\subsection{Data collection and use}
+To find predictive features I will look at the features that \citet{flekova} used in their research. These can be divided into four groups: surface, style, syntax and readability.  The details of these features will be discussed later in this proposal. I will look at the correlations between the individual features and income categories and use the features that turn out to be predictive of income level for the next part of my research.
+
+As I work with income levels, I will use a classification algorithm in order to predict users' income level. \citet{flekova} used regression in their research, as they were able to treat income as a continuous variable because the UK Office for National Statistics provides an average income for each and every occupation, whereas Statistics Netherlands (CBS) does not.  We therefore classify our users with the best income data available for their occupation. I will discuss this in more detail later on in this section.
+
+I will build a classifier that uses the predictive features. With that classifier, I will find out to what extent I can accurately predict the income level of Dutch Twitter users. I intend to use a number of classification algorithms in order to find the one that returns the best results. Because scikit-learn, a popular machine learning package for Python, contains a lot of different algorithms and makes it easy to switch between algorithms, this shouldn't bring about a significant increase in workload.
+
+Afterwards, I will evaluate the performance of the classifier. Details of the expected output and evaluation of the results follows in the next section.
+
+\subsection{Data collection and usage}
+As discussed earlier, the primary data set for my research will be a corpus of Twitter posts, categorized on the income level of its author. I will extract the users from the Dutch-language twitter2 corpus of the University of Groningen. By using the provided tweet2tab tool to extract the id, username, real name and biography of each tweet's author, I will create a file with Dutch-speaking Twitter users that we can use for further processing. 
+
+For each extracted user, we try to find their occupation. We use distant supervision to find these occupations. Using an existing list of occupational titles from \cite{codelijsten} we look for an occupation in each user's biography. This list also holds the corresponding class from the International Standard Classification of Occupations \citep{isco}.  With that class, we can look up the average yearly income in an existing list from \cite{uurlonen}. The details of these occupational classes will be discussed in the following subsection.
+
+Afterwards, we are left with users labeled with their occupation and the average yearly income for the occupational class they fall into. Because we've collected our labels automatically it's necessary to check them for correctness. I will probably select a limited number of user profiles from the large collection for each income level, for which I am certain the label is right. 
+
+After the users are selected, I will divide them into their respective income classes. The exact classes are to be determined. \citet{flekova} used two groups at some point in their research: $\leq$ \pounds 25.000 and $\geq$ \pounds 35.000). Statistics Netherlands use a six-way classification in their regular research: \euro 0 - \euro 10.000, \euro 10.000 - \euro 20.000, \euro 20.000 - \euro 30.000, \euro 30.000 - \euro 40.000, \euro 40.000 - \euro 50.000 and \euro 50.000 or more. I will explore both classifications and use them both in my research, if possible.
+
+Finally, when the users are divided in their respective income levels, their 500 latest Dutch posts are retrieved from Twitter using the REST API, retweets excluded. If a user has less than 500 Dutch self written tweets, it will be discarded. The result of our data collection effort is corpus which is divided into directories for each income level. Each directory contains text files, which hold the posts for each user belonging to the income level. 
+
+The amount of users in our corpus depends strongly on the successful labeling of our data. The exact amount of tweets I will use to extract users will therefore depend on the yield of the labeling process. My first intention is to use a month's worth of tweets to extract user.
+
+The corpus will be used to find stylometric features that are predictive of users' income levels. The extraction of features from the corpus will be discussed later on. After the discovery of such features, I will use the corpus to perform multifold cross validation of the classifier. The exact amount of validations is to be determined at a later time.
 
 \subsection{Labels, features and additional data}
 \citet{codelijsten}
