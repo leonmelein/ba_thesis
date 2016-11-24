@@ -3,7 +3,7 @@ import re
 import sys
 
 
-def classifyUsers(userfile):
+def classifyUsers():
     users_class_income = {}
     users_processed = []
 
@@ -19,8 +19,9 @@ def classifyUsers(userfile):
 
     found_occupations = 0
     # Try to find an occupation for each user
-    with open(userfile, 'r') as users:
-        for line in users:
+    #with open(userfile, 'r') as users:
+    #    for line in users:
+    for line in sys.stdin:
             parts = line.split('\t')
 
             userid = parts[0]
@@ -58,8 +59,5 @@ def classifyUsers(userfile):
     print("Found occupations:", found_occupations)
     print("Found users:", len(users_processed))
 
-if len(sys.argv) == 0:
-    "You must pass a tab separated file with users for processing!"
-else:
-    classifyUsers(sys.argv[1])
-    pass
+if __name__ == '__main__':
+    classifyUsers()

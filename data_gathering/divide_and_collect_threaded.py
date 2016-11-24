@@ -2,7 +2,6 @@ import pickle
 import json
 import langid
 import os
-import time
 
 from TwitterSearch import TwitterSearchException
 from TwitterSearch import TwitterUserOrder, TwitterSearch
@@ -90,35 +89,30 @@ def getTweets(userid, final_income_class):
 
     try:
         # Get all tweets without RT's (max 3200)
-        count_tweets = 0
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        os.chdir(directory)
+        all_tweets = []
 
-        with open(filename, 'w+') as file_handler:
-            for tweet in ts.search_tweets_iterable(twitter_user_order, my_callback_closure):
-                # Filter out retweets
-                if tweet['text'][:2] != "RT":
-                    # Check if tweet is in Dutch
-                    # TODO: remove url's from tweets
-                    if langid.classify(tweet['text'])[0] == "nl":
-                        file_handler.write(tweet['text'] + "\n")
-                        count_tweets += 1
+        for tweet in ts.search_tweets_iterable(twitter_user_order):
+            # Filter out retweets
+            if tweet['text'][:2] != "RT":
+                # Check if tweet is in Dutch
+                # TODO: remove url's from tweets
+                if langid.classify(tweet['text'])[0] == "nl":
+                    all_tweets.append(tweet)
 
-        if count_tweets < 500:
-            print("Too small, throw away")
-            os.remove(filename)
-        else:
-            print("Sufficient, keep")
+        # If user has enough tweets, save tweets to file
+        if len(all_tweets) > 500:
+            print("Length sufficient")
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            os.chdir(directory)
+            print(os.getcwd())
 
+            with open(filename, 'w+') as file_handler:
+                for tweet in all_tweets:
+                    file_handler.write("{}\n".format(tweet['text']))
     except TwitterSearchException as twe:
         print(twe.args)
 
-
-def my_callback_closure(current_ts_instance):  # accepts ONE argument: an instance of TwitterSearch
-    queries, tweets_seen = current_ts_instance.get_statistics()
-    if queries > 0 and (queries % 5) == 0:  # trigger delay every 5th query
-        time.sleep(60)  # sleep for 60 seconds
 
 with open("output_files/user_class_income.pickle", "rb") as file:
     users = pickle.load(file)
