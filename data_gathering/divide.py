@@ -67,9 +67,10 @@ def divide(users, type="twoway"):
 
     return divided
 
-with open('output_files/user_class_income.pickle', 'rb') as inputfile:
+#with open('output_files/user_class_income.pickle', 'rb') as inputfile:
+with open('output_files/applicable_users.pickle', 'rb') as inputfile:
     user_dict = pickle.load(inputfile)
     divided_dict = divide(user_dict)
 
-with open('output_files/divided_user_class_income.pickle', 'wb+') as outputfile:
+with open('output_files/divided_user_class_income_DONOTUSE.pickle', 'wb+') as outputfile:
     pickle.dump(divided_dict, outputfile)

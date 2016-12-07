@@ -12,7 +12,6 @@ def collect(users):
     ts = connectTwitter()
     for key in users.keys():
         for user in users[key]:
-            print(user, key)
             getTweets(int(user), key, ts)
 
 
@@ -31,7 +30,6 @@ def getTweets(userid, final_income_class, ts):
 
     try:
         # Get all tweets without RT's (max 3200)
-        # Get all tweets without RT's (max 3200)
         all_tweets = []
 
         for tweet in ts.search_tweets_iterable(twitter_user_order, callback=handle_rate_limits):
@@ -46,11 +44,10 @@ def getTweets(userid, final_income_class, ts):
 
         # If user has enough tweets, save tweets to file
         if len(all_tweets) > 500:
-            print("Length sufficient")
+            print("Saved ", userid, "at", time.strftime("%H:%M", time.localtime(time.time())))
             if not os.path.exists(directory):
                 os.makedirs(directory)
             os.chdir(directory)
-            print(os.getcwd())
 
             with open(filename, 'w+') as file_handler:
                 for tweet in all_tweets:
@@ -63,7 +60,8 @@ def getTweets(userid, final_income_class, ts):
 
 def handle_rate_limits(current_ts_instance):  # accepts ONE argument: an instance of TwitterSearch
     queries, tweets_seen = current_ts_instance.get_statistics()
-    if queries > 0 and (queries % 32) == 0:  # trigger delay every 32th query
+    if queries > 0 and (queries % 128) == 0:  # trigger delay every 128th query
+        print("Rate limit triggered", queries)
         time.sleep(30)  # sleep for 30 seconds
 
 with open("output_files/autoselected_users.pickle", "rb") as file:

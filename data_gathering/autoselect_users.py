@@ -16,9 +16,9 @@ def main(users):
         random_chosen = numpy.random.choice(flattened_values, 1500, replace=False)
         autoselected_users[key] = random_chosen.tolist()
 
-    with open('output_files/autoselected_users.pickle', 'wb+') as outputfile:
+    with open('output_files/autoselected_users_CLEAN.pickle', 'wb+') as outputfile:
         pickle.dump(autoselected_users, outputfile)
 
-with open('output_files/divided_user_class_income.pickle', 'rb') as inputfile:
+with open('output_files/divided_user_class_income_CLEAN.pickle', 'rb') as inputfile:
     userdict = pickle.load(inputfile)
     main(userdict)

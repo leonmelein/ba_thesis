@@ -4,6 +4,8 @@ import pickle
 import os
 import json
 import random
+import time
+import numpy
 from TwitterSearch import TwitterSearchException, TwitterUserOrder, TwitterSearch
 
 
@@ -33,38 +35,35 @@ def main(user_dict):
     not_enough_tweets, not_found, no_tweets = 0, 0, 0
     ts = connect_twitter()
 
-    #for key in user_dict.keys():
-    key = "high"
-    values = user_dict["high"]
-    random.shuffle(values)
+    for key in user_dict.keys():
+        values = user_dict[key]
+        random.shuffle(values)
 
-    for item in values:
-        twitter_user_order = TwitterUserOrder(int(item[0]))
-        try:
-            tweets = ts.search_tweets_iterable(twitter_user_order)
+        for item in values:
+            twitter_user_order = TwitterUserOrder(int(item[0]))
+            twitter_user_order.set_include_rts(True)
+            try:
+                i = 0
+                for tweet in ts.search_tweets_iterable(twitter_user_order, callback=handle_rate_limits):
+                    i += 1
 
-            # Get number of tweets, disregard users with less than 500 tweets
-            no_of_tweets = tweets['content'][000]['user']['statuses_count']
-            if no_of_tweets >= 500:
-                if key == "low":
-                    low.append(item)
-                else:
-                    high.append(item)
-            else:
-                print(item[0], "has not enough tweets, skipping")
-                not_enough_tweets += 1
+                if i >= 500:
+                    print(item[0], i)
+                    if key == "low":
+                        low.append(item)
+                    else:
+                        high.append(item)
 
-        except TwitterSearchException as e:
-            #print(item[0], " could not be found, skipping")
-            print(item[0], e)
-            not_found += 1
+            except TwitterSearchException as e:
+                print(item[0], e)
+                not_found += 1
 
-        except KeyError:
-            print(item[0], "has no tweets, skipping")
-            no_tweets += 1
+            except KeyError:
+                print(item[0], "has no tweets, skipping")
+                no_tweets += 1
 
     # Export selected users to new dictionary
-    export_dict = {'high': high}
+    export_dict = {'high': high, 'low':low}
 
     # Save selected, divided users
     with open('output_files/cleaned_divided_users_high.pickle', 'wb+') as outputfile:
@@ -72,7 +71,7 @@ def main(user_dict):
 
     # Print outcomes
     print("\nRemaining # of users in high and low class")
-    #print("Low:", len(export_dict['low']))
+    print("Low:", len(export_dict['low']))
     print("High:", len(export_dict['high']))
     #print("\nReasons for removal")
     #print("Not enough tweets:", not_enough_tweets)
@@ -81,6 +80,12 @@ def main(user_dict):
 
     print("\nCleaned selection has been saved to disk.")
 
-with open('output_files/divided_user_class_income.pickle', 'rb') as inputfile:
+def handle_rate_limits(current_ts_instance):  # accepts ONE argument: an instance of TwitterSearch
+    queries, tweets_seen = current_ts_instance.get_statistics()
+    if queries > 0 and (queries % 64) == 0:  # trigger delay every 128th query
+        print("Rate limit triggered", queries)
+        time.sleep(30)  # sleep for 30 seconds
+
+with open('output_files/divided_user_class_income_SELECT.pickle', 'rb') as inputfile:
     userdict = pickle.load(inputfile)
     main(userdict)
