@@ -59,6 +59,7 @@ atlassian-ide-plugin.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 /corpus/*
+/datagathering/private
 /supportdata/output_files/
 .idea/
 *.pyc
