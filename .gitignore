@@ -64,3 +64,4 @@ atlassian-ide-plugin.xml
 .idea/
 *.pyc
 __pycache__
+/machinelearning/rt-polaritydata/

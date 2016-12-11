@@ -2,8 +2,8 @@ import pickle
 import numpy
 
 
-def random_select_users(userfile="../supportdata/output_files/users_in_classes.pickle", amount=2000,
-                        output_dir="../supportdata/output_files/", debug=False):
+def pre_select_users(userfile="../supportdata/output_files/users_in_classes.pickle", amount=2000,
+                     output_dir="../supportdata/output_files/", debug=False):
 
     output_file = "preselected_users.pickle"
     output = output_dir + output_file
@@ -30,4 +30,4 @@ def random_select_users(userfile="../supportdata/output_files/users_in_classes.p
         pickle.dump(autoselected_users, outputfile)
 
 if __name__ == '__main__':
-    random_select_users(debug=True)
+    pre_select_users(debug=True)
