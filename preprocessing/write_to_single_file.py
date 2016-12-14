@@ -29,7 +29,7 @@ def write_to_single_file(userfile="../supportdata/output_files/postselected_user
             detokenized_tweets = []
             for tokenized_tweet in tokenized_tweets:
                 # lower all words, just in case... TODO: re-evaluate
-                detokenized_tweets.append(" ".join(tokenized_tweet).lower())
+                detokenized_tweets.append(" ".join(tokenized_tweet).lower()+" ;")
 
             if debug:
                 print(detokenized_tweets)
