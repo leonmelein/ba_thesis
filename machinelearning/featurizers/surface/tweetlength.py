@@ -1,8 +1,7 @@
 import string
 
 
-def generate(self, text, debug=False):
-    tweets = text[:-1].split("; ")
+def generate(tweets, debug=False):
 
     # Removal of punctuation
     punctuation = list(string.punctuation)
@@ -31,4 +30,5 @@ def generate(self, text, debug=False):
 
 
 if __name__ == '__main__':
-    generate(None, "dit is een schande ! ; vanavond om 20:00 de premiere van de almanak . ; auw, mijn hand ! ")
+    print(generate(["dit is een schande !", "vanavond om 20:00 de premiere van de almanak . ", "auw, mijn hand ! "]))
+

@@ -1,32 +1,51 @@
-from nltk.tokenize import TweetTokenizer
+#!/usr/bin/python
+from preprocessing import sentencetokenizer, twittertokenizer
+import pickle
 
 
-def tokenize(tweets):
-    """
-    Tokenizes tweets using the TwitterTokenizer from the NLTK library: http://www.nltk.org/api/nltk.tokenize.html.
-    Also removes user handles, URLs and hashtags using simple heuristics.
-    :param tweets: A list of tweets for a certain user.
-    :return: A list containing all tokenized tweets.
-    """
+def main(userfile="../supportdata/output_files/postselected_users.pickle", output_dir="../supportdata/output_files/",
+         corpus="../corpus/", amount=500, debug=False):
 
-    # You cannot name a file "tokenize.py" because that interferes with NLTK, are you kidding me...
-    tokenizer = TweetTokenizer(strip_handles=True)
-    tokenized_tweets = []
+    output_file = "tokenized_users.pickle"
+    output = output_dir + output_file
 
-    for tweet in tweets:
-        cleaned_tokens = []
-        tokens = tokenizer.tokenize(tweet)
-        for token in tokens:
-            if token[:4] == "http":
-                pass
-            elif token[:1] == "#" and len(token) > 1:
-                pass
+    low, high = [], []
+
+    with open(userfile, "rb") as inputfile:
+        users = pickle.load(inputfile)
+
+    for key, values in users.items():
+        if debug:
+            print(key, ":", values)
+
+        for value in values:
+            if debug:
+                print(value)
+
+            filepath = "{}{}/{}.txt".format(corpus, key, value)
+            with open(filepath, "r") as inputfile:
+                tweets = inputfile.readlines()[:amount]
+                assert (len(tweets) == amount)
+
+            #   Create a list with a string of tokens for every tweet, each token separated with a space
+            tokenized_tweets = twittertokenizer.tokenize(tweets)
+
+            #   Create a list of sentences for every tweet
+            tokenized_sentences = []
+            for tweet in tokenized_tweets:
+                tokenized_sentences += sentencetokenizer.tokenize(tweet)
+
+            if key == "low":
+                low.append((tokenized_tweets, tokenized_sentences))
             else:
-                cleaned_tokens.append(token)
-        tokenized_tweets.append(cleaned_tokens)
+                high.append((tokenized_tweets, tokenized_sentences))
 
-    return tokenized_tweets
+            if debug:
+                #print(tokenized_tweets, tokenized_sentences)
+                pass
+
+            with open(output, 'wb+') as outputfile:
+                pickle.dump({"low": low, "high": high}, outputfile)
 
 if __name__ == '__main__':
-    with open('../data_gathering/corpus/high/23235082.txt') as inputfile:
-        print(tokenize(inputfile.readlines()))
+    main(debug=True)

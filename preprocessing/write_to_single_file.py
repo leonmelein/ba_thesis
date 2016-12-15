@@ -1,6 +1,6 @@
 import os
 import pickle
-from preprocessing import tokenizer
+from preprocessing import twittertokenizer
 
 
 def write_to_single_file(userfile="../supportdata/output_files/postselected_users.pickle", corpus="../corpus/",
@@ -25,7 +25,7 @@ def write_to_single_file(userfile="../supportdata/output_files/postselected_user
                 assert(len(tweets) == amount)
 
             # Tokenize tweets
-            tokenized_tweets = tokenizer.tokenize(tweets)
+            tokenized_tweets = twittertokenizer.tokenize(tweets)
             detokenized_tweets = []
             for tokenized_tweet in tokenized_tweets:
                 # lower all words, just in case... TODO: re-evaluate
