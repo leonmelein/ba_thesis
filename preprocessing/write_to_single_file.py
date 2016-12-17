@@ -1,6 +1,6 @@
-import os
 import pickle
-from preprocessing import twittertokenizer
+
+from preprocessing.tokenizers import twittertokenizer
 
 
 def write_to_single_file(userfile="../supportdata/output_files/postselected_users.pickle", corpus="../corpus/",

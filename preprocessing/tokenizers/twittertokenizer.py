@@ -1,4 +1,5 @@
 from nltk.tokenize import TweetTokenizer
+from preprocessing.punctuation import stripper
 
 
 def tokenize(tweets):
@@ -23,10 +24,14 @@ def tokenize(tweets):
                 pass
             else:
                 cleaned_tokens.append(token)
-        tokenized_tweets.append(" ".join(cleaned_tokens).lower())
+
+        tokenized_tweets.append([token.lower() for token in cleaned_tokens])
 
     return tokenized_tweets
 
 if __name__ == '__main__':
     with open('../corpus/high/23366079.txt') as inputfile:
-        print(tokenize(inputfile.readlines()))
+        tweets_in_tokens = tokenize(inputfile.readlines())
+
+        for tweet in tweets_in_tokens:
+            print(stripper.strip(tweet))

@@ -4,39 +4,24 @@ import string
 def generate(tweets, debug=False):
     types, tokens = 0, 0
     for tweet in tweets:
-        # Removal of punctuation
-        punctuation = list(string.punctuation)
-        punctuation.append("...")
-        punctuation.append("…")
-
-        # TODO: provide pretokenized tweets
-        cleaned_text = []
-        for item in tweet.split(" "):
-            if item not in punctuation:
-                cleaned_text.append(item)
-
-        if debug:
-            print(cleaned_text)
-
         # Tokens
-        tokens += len(cleaned_text)
+        tokens += len(tweet)
 
         # Types
         individual_types = []
-        for item in cleaned_text:
-
+        for word in tweet:
             if debug:
-                print(item, individual_types)
+                print(word, individual_types)
 
-            if item not in individual_types:
-                individual_types.append(item)
+            if word not in individual_types:
+                individual_types.append(word)
 
         types += len(individual_types)
 
     if debug:
         print(types, tokens)
 
-    return {"TTR": types / tokens}
+    return {"S_TTR": types / tokens}
 
 
 if __name__ == '__main__':

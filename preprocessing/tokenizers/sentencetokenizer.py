@@ -2,15 +2,18 @@
 import pickle
 
 
-def tokenize(tweet, training="../supportdata/input_files/dutch.pickle"):
+def load_tokenizer(training="../supportdata/input_files/dutch.pickle"):
+    with open(training, 'rb') as f:
+        tokenizer = pickle.load(f)
+
+    return tokenizer
+
+
+def tokenize(tweet, tokenizer=load_tokenizer()):
     """
 
     :return:
     """
-
-    with open(training, 'rb') as f:
-        tokenizer = pickle.load(f)
-
     return tokenizer.tokenize(tweet)
 
 if __name__ == '__main__':

@@ -1,2 +1,2 @@
-__all__ = ['ari', 'coleman-liau', 'flesch_kincaid', 'flesch_reading_ease', 'gunning_fog', 'lix', 'smog']
+__all__ = ['measures']
 from machinelearning.featurizers.readability import *
