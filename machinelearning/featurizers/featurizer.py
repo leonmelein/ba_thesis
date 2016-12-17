@@ -1,4 +1,7 @@
 #!/usr/bin/python
+# Featurizer
+# Léon Melein, s2580861
+
 from sklearn.base import TransformerMixin
 from machinelearning.featurizers.surface import typetokenratio, fiveletterwordsratio, tweetlengths
 from machinelearning.featurizers.ngrams import word_ngrams

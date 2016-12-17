@@ -1,2 +1,2 @@
-#__all__ = ['fiveletterswordsratio', 'tweetlength', 'typetokenratio', 'wordlength']
+__all__ = ['fiveletterswordsratio', 'tweetlengths', 'typetokenratio']
 from machinelearning.featurizers.surface import *

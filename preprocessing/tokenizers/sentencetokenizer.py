@@ -2,7 +2,7 @@
 import pickle
 
 
-def load_tokenizer(training="../supportdata/input_files/dutch.pickle"):
+def load_tokenizer(training="../supportdata/input_files/sentence_tokenizer_dutch.pickle"):
     with open(training, 'rb') as f:
         tokenizer = pickle.load(f)
 

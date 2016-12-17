@@ -39,11 +39,12 @@ def main(userfile="../supportdata/output_files/postselected_users.pickle", outpu
             tokenized_sentences = []
             for tweet in tokenized_tweets:
                 tokenized_sentences += sentencetokenizer.tokenize(" ".join(tweet), sent_tokenizer)
+            tokenized_sentences_string = "\n".join(tokenized_sentences)
 
             if key == "low":
-                low.append((tokenized_and_stripped_tweets, tokenized_sentences))
+                low.append((tokenized_and_stripped_tweets, tokenized_sentences_string))
             else:
-                high.append((tokenized_and_stripped_tweets, tokenized_sentences))
+                high.append((tokenized_and_stripped_tweets, tokenized_sentences_string))
 
             if debug:
                 print(tokenized_tweets, "\n", tokenized_sentences)

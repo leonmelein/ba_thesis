@@ -1,6 +1,6 @@
 import os
 import pickle
-from numpy.random import choice
+from numpy.random import seed, choice
 
 
 def post_select_users(corpus="../corpus/", output_dir="../supportdata/output_files/",
@@ -19,6 +19,7 @@ def post_select_users(corpus="../corpus/", output_dir="../supportdata/output_fil
         available_users = [(name[:-4]) for name in os.listdir(".")]
 
         # Select the chosen amount of users from class
+        seed(42)
         selected_users = choice(available_users, amount, replace=False).tolist()
         assert(len(selected_users) == amount)
         selected_per_class[income_class] = selected_users
