@@ -18,8 +18,12 @@ def post_select_users(corpus="../corpus/", output_dir="../supportdata/output_fil
         os.chdir(corpus+income_class)
         available_users = [(name[:-4]) for name in os.listdir(".")]
 
-        # Select the chosen amount of users from class
+        # Using 42 as seed to ensure reproducible results
+        # "Answer to the Ultimate Question of Life, The Universe, and Everything"
+        # - The Hitchhiker's Guide to the Galaxy
         seed(42)
+
+        # Select the chosen amount of users from class
         selected_users = choice(available_users, amount, replace=False).tolist()
         assert(len(selected_users) == amount)
         selected_per_class[income_class] = selected_users

@@ -9,10 +9,11 @@ from sklearn.model_selection import KFold
 import numpy as np
 import random
 import pickle
-from machinelearning.featurizers.featurizer import Featurizer
+from machinelearning.featurizers.Featurizer import Featurizer
 
 
-def perform_classification(X_train, X_test, y_train, y_test):
+def perform_classification(X_train, X_test, y_train, y_test, featureset=("ngrams", "surface", "readability"),
+                           ngrams="1-2", prefeaturized=False):
     """
     Performs a single classification using a Logistic Regression model and prints the resulting statistics to screen.
 
@@ -34,16 +35,21 @@ def perform_classification(X_train, X_test, y_train, y_test):
 
     print("(Re)vectorization of data…")
     vectorizer = DictVectorizer()
-    featurizer = Featurizer(word_ngrams="1-2", binary=True)
     classifier = LogisticRegression()
 
     # Extract features to feature dictionaries
-    X_train_dict = featurizer.fit_transform(X_train)
-    X_test_dict = featurizer.transform(X_test)
+    if not prefeaturized:
+        featurizer = Featurizer(word_ngrams=ngrams, feature_set=featureset, binary=True)
+        X_train_dict = featurizer.fit_transform(X_train)
+        X_test_dict = featurizer.transform(X_test)
 
-    # Convert dicts to internal representation of sklearn
-    X_train = vectorizer.fit_transform(X_train_dict)
-    X_test = vectorizer.transform(X_test_dict)
+        # Convert dicts to internal representation of sklearn
+        X_train = vectorizer.fit_transform(X_train_dict)
+        X_test = vectorizer.transform(X_test_dict)
+
+    else:
+        X_train = vectorizer.fit_transform(X_train)
+        X_test = vectorizer.transform(X_test)
 
     print("Training model…")
     classifier.fit(X_train, y_train)
@@ -68,6 +74,7 @@ def perform_classification(X_train, X_test, y_train, y_test):
 
 
 def load_user_data(userfile="../supportdata/output_files/sentenced_tokenized_users.pickle"):
+
     """
     Loads user data from dictionary with pretokenized user information.
 
@@ -130,11 +137,12 @@ def show_most_informative_features(vectorizer, clf, n=5):
             print("\t%.4f\t%-15s\t\t%.4f\t%-15s" % (coef_1, fn_1, coef_2, fn_2))
 
 
-def kfold_validate(k=1):
+def kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams="1-2", prefeaturized=False,
+                   ignored_features=[], userfile="../supportdata/output_files/prefeaturized_users.pickle"):
     """
     Performs a k-fold validation of the classifier and prints the outcomes to screen.
 
-    :param k: number of validations as Int (default = 1).
+    :param k: number of validations as Int (default: 1).
     :return: None
     """
 
@@ -145,7 +153,11 @@ def kfold_validate(k=1):
     print("===== CLASSIFIER START =====")
 
     print("Loading data…")
-    data = load_user_data()
+    if prefeaturized:
+        data = load_user_data(userfile=userfile)
+    else:
+        data = load_user_data()
+
     print("- Total # of instances:", len(data))
 
     # Unpack user data into users and labels for further use
@@ -165,13 +177,14 @@ def kfold_validate(k=1):
         print("- # of train instances: {}\n- # of test instances: {}".format(len(X_train), len(X_test)))
 
         # Perform the classification task with the split data
-        perform_classification(X_train, X_test, y_train, y_test)
+        perform_classification(X_train, X_test, y_train, y_test, featureset=feature_set, ngrams=ngrams,
+                               prefeaturized=prefeaturized)
 
     else:
         y_test_total, y_predicted_total = [], []
 
         # In case of multiple runs, calculate the needed data splits according to the number of runs requested (= k)
-        print("Calculating KFold splits (k = {})…".format(k))
+        print("Calculating {}-fold splits…".format(k))
         kf = KFold(n_splits=k, random_state=seed)
 
         # For each generated split, create the requested data split and perform the classification task
@@ -185,15 +198,19 @@ def kfold_validate(k=1):
 
             # Save the input and output labels of each classifier run
             y_test_total = y_test_total + y_test.tolist()
-            y_predicted_total = y_predicted_total + perform_classification(X_train, X_test, y_train, y_test)
+            y_predicted_total = y_predicted_total + perform_classification(X_train, X_test, y_train, y_test,
+                                                                           featureset=feature_set, ngrams=ngrams,
+                                                                           prefeaturized=prefeaturized)
             run += 1
 
         print("\n===== FINAL RESULTS =====")
         # Report the results of our k-fold validation
-        print(classification_report(y_test_total, y_predicted_total, [0, 1], ["low", "high"]))
+        report = classification_report(y_test_total, y_predicted_total, [0, 1], ["low", "high"])
+        print(report)
+        return report
 
     print("\n===== CLASSIFIER END =====")
 
 
 if __name__ == '__main__':
-    kfold_validate(k=10)
+    kfold_validate(k=1, prefeaturized=True)

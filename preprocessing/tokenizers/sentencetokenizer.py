@@ -3,6 +3,12 @@ import pickle
 
 
 def load_tokenizer(training="../supportdata/input_files/sentence_tokenizer_dutch.pickle"):
+    """
+    Loads a pretrained PunktSentenceTokenizer object from a Pickle file.
+
+    :param training: String containing the path to the Pickle file.
+    :return: a PunktSentenceTokenizer object.
+    """
     with open(training, 'rb') as f:
         tokenizer = pickle.load(f)
 
@@ -11,8 +17,11 @@ def load_tokenizer(training="../supportdata/input_files/sentence_tokenizer_dutch
 
 def tokenize(tweet, tokenizer=load_tokenizer()):
     """
+    Tokenizes tweet into the sentences it comprises.
 
-    :return:
+    :param tweet: A list of tweets for a certain user.
+    :param tokenizer: a pretrained PunktSentenceTokenizer object (default: load a tokenizer from file)
+    :return: a list containing all sentences included in the tweet
     """
     return tokenizer.tokenize(tweet)
 

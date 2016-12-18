@@ -5,7 +5,7 @@
 
 def generate(tweets, debug=False):
     """
-    Generates the ratio of words longer than 5 characters to the amount of all words per user.
+    Generates the ratio of words longer than 5 characters to the amount of all words per user (S_5CH).
 
     :param tweets: a List containing a list of tokens per tweet.
     :param debug: a Bool indicating if debugging information should be printed (default: False).

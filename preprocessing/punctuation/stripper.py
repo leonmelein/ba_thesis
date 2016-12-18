@@ -2,13 +2,17 @@
 import string
 
 
-def strip(tokens):
+def strip(tokens, lower=False):
     # Removal of punctuation
     punctuation = list(string.punctuation)
     punctuation.append("...")
     punctuation.append("…")
 
-    clean_tokens = [token for token in tokens if token not in punctuation]
+    if lower:
+        clean_tokens = [token.lower() for token in tokens if token not in punctuation]
+    else:
+        clean_tokens = [token for token in tokens if token not in punctuation]
+
     return clean_tokens
 
 if __name__ == '__main__':

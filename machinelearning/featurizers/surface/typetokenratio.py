@@ -5,7 +5,7 @@
 
 def generate(tweets, debug=False):
     """
-    Generates the type-token ratio for a user.
+    Generates the type-token ratio for a user (S_TTR).
 
     :param tweets: a List containing a list of tokens per tweet.
     :param debug: a Bool indicating if debugging information should be printed (default: False).

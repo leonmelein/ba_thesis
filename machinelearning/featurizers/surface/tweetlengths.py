@@ -5,7 +5,11 @@
 
 def generate(tweets, debug=False):
     """
-    Generates the total tweet length in both words and characters per user, as well as relative word length per user.
+    Generates the following length measures per user:
+
+    -   Total tweet length in words         (S_TLW)
+    -   Total tweet length in characters    (S_TLCH)
+    -   Relative word length per user       (S_RWL)
 
     :param tweets: a List containing a list of tokens per tweet.
     :param debug: a Bool indicating if debugging information should be printed (default: False).

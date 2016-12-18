@@ -5,8 +5,8 @@ from preprocessing.tokenizers import sentencetokenizer, twittertokenizer
 from preprocessing.punctuation import stripper
 
 
-def main(userfile="../supportdata/output_files/postselected_users.pickle", output_dir="../supportdata/output_files/",
-         corpus="../corpus/", amount=500, debug=False):
+def tokenize(userfile="../supportdata/output_files/postselected_users.pickle", output_dir="../supportdata/output_files/",
+             corpus="../corpus/", amount=500, debug=False):
 
     output_file = "tokenized_users.pickle"
     output = output_dir + output_file
@@ -30,17 +30,21 @@ def main(userfile="../supportdata/output_files/postselected_users.pickle", outpu
                 tweets = inputfile.readlines()[:amount]
                 assert (len(tweets) == amount)
 
-            #   Create a list with a string of tokens for every tweet, each token separated with a space
+            # Create a list of tokens for every tweet,
             tokenized_tweets = twittertokenizer.tokenize(tweets)
-            tokenized_and_stripped_tweets = [stripper.strip(tweet) for tweet in tokenized_tweets]
 
-            #   Create a list of sentences for every tweet
+            # Remove punctuation and lower each token
+            tokenized_and_stripped_tweets = [stripper.strip(tweet, lower=True) for tweet in tokenized_tweets]
+
+            # Create a list of sentences for every tweet
+            # N.B. We use the non-lowered tweets as some readability measures depend on capitalization
             sent_tokenizer = sentencetokenizer.load_tokenizer()
             tokenized_sentences = []
             for tweet in tokenized_tweets:
                 tokenized_sentences += sentencetokenizer.tokenize(" ".join(tweet), sent_tokenizer)
             tokenized_sentences_string = "\n".join(tokenized_sentences)
 
+            # Save tokenized data
             if key == "low":
                 low.append((tokenized_and_stripped_tweets, tokenized_sentences_string))
             else:
@@ -49,8 +53,8 @@ def main(userfile="../supportdata/output_files/postselected_users.pickle", outpu
             if debug:
                 print(tokenized_tweets, "\n", tokenized_sentences)
 
-            with open(output, 'wb+') as outputfile:
-                pickle.dump({"low": low, "high": high}, outputfile)
+    with open(output, 'wb+') as outputfile:
+        pickle.dump({"low": low, "high": high}, outputfile)
 
 if __name__ == '__main__':
-    main(debug=False)
+    tokenize(debug=False)

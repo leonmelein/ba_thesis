@@ -20,6 +20,7 @@ def evaluate_annotations(userfile="../supportdata/output_files/users_in_classes.
 
     for key in users.keys():
         values = users[key]
+        random.seed(42)
         random.shuffle(values)
 
         if debug:

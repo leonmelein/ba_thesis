@@ -9,9 +9,12 @@ def pre_select_users(userfile="../supportdata/output_files/users_in_classes.pick
     output = output_dir + output_file
     with open(userfile, "rb") as inputfile:
         users = pickle.load(inputfile)
-
     autoselected_users = {}
-    numpy.random.seed(42)   # Real random number?
+
+    # Using 42 as seed to ensure reproducible results
+    # "Answer to the Ultimate Question of Life, The Universe, and Everything"
+    # - The Hitchhiker's Guide to the Galaxy
+    numpy.random.seed(42)
 
     for key in users.keys():
         if debug:
