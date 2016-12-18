@@ -55,37 +55,8 @@ def main():
     reports.append(classifier.kfold_validate(k=10, prefeaturized=True,
                                              userfile="../supportdata/output_files/prefeaturized_users_15.pickle"))
 
-
-    # 1:All features (ng = 3)
-    # reports.append(classifier.kfold_validate(k=10, feature_set=(ngrams, surface, readability), ngrams=trigram))
-    #
-    # # 2:All features (ng = 2)
-    # reports.append(classifier.kfold_validate(k=10, feature_set=(ngrams, surface, readability), ngrams=bigram))
-    #
-    # # 3:All features (ng = 1)
-    # reports.append(classifier.kfold_validate(k=10, feature_set=(ngrams, surface, readability), ngrams=unigram))
-    #
-    # # 4:Surface + Readability
-    # reports.append(classifier.kfold_validate(k=10, feature_set=(surface, readability)))
-    #
-    # # 5:Surface
-    # reports.append(classifier.kfold_validate(k=10, feature_set=(surface)))
-    #
-    # # 6:Readability
-    # reports.append(classifier.kfold_validate(k=10, feature_set=(readability)))
-
-    # 7:Readability + ng1
-    # 8:Readability + ng2
-    # 9:Readability + ng3
-    # 10:Surface + ng1
-    # 11:Surface + ng2
-    # 12:Surface + ng3
-    # 13:ng1
-    # 14:ng2
-    # 15:ng3
-
     print("\n=================================\n\n")
-    i = 0
+    i = 1
     for report in reports:
         print("Test", i)
         print(report)
