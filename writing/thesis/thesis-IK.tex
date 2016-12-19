@@ -28,6 +28,7 @@ oneside, % One page layout (no page indentation)
 headinclude,footinclude, % Extra spacing for the header and footer
 %BCOR5mm, % Binding correction
 ] {book}% {scrartcl}
+\usepackage{eurosym}
 
 \input{structure.tex} % Include the structure.tex file which specified the document structure and layout
 
@@ -106,7 +107,7 @@ S2580861\\
 \chapter*{Abstract}
 \markboth{Abstract}{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-
+\textit{To be written on Tuesday.}
 
 
 %----------------------------------------------------------------------------------------
@@ -132,7 +133,7 @@ S2580861\\
 \markboth{Preface}{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 
-\textit{To be added to the final version of my thesis.}
+\textit{To be written on Tuesday.}
 
 
 %----------------------------------------------------------------------------------------
@@ -141,12 +142,18 @@ S2580861\\
 
 \chapter{Introduction}
 \pagenumbering{arabic}
+As we rely more and more on the internet and its applications in our daily lives, the opportunities for author profiling continue to grow. Social media services, and the text-based communications they facilitate, provide an ever-growing corpus of texts, which are linked to their author. Furthermore, these services provide additional self-disclosed information about the authors like education, occupation and relationships. If we use this data the right way, we can perform research that simply wasn't possible before or on a much bigger scale than was possible before \citep{sloan}.
 
-\begin{enumerate}
-\item Which research questions the thesis is providing answers to (or trying to);
-\item Why answers are given to these questions (motivation);
-\item How the answers are given (structure).
-\end{enumerate}
+
+An aspect of author profiling is income prediction. A potential use for these estimations of income is in customer relations. Just as the rest of our life, our contact with companies and their customer services moves online. People want to be helped quickly and without giving a lot of information in advance. They expect companies to "know" them. Companies want to know their customers so they don't have to ask for a lot of information and can help quickly. Income can be a key factor in this, because it can help in determining which products or services a customer probably already has and in which it is likely interested.
+
+An example: a cable company customer with a relatively low income probably has a low tier service package. He or she will only be interested in cheap(er) options or options that provide significant extra value, in comparison to their additional cost. Knowing this, offering an expensive movie channel package to this customer does not make a lot of sense. Such a package is nice to have, but isn't of much value - unless the customer is a true movie addict.
+
+
+Despite the existing research into English speaking Twitter users and their respective incomes, there is currently no comparable research for Dutch speaking Twitter users. We will therefore focus our research on the following question: to what extent is it possible to accurately predict the income level of a Dutch Twitter user and which stylometric features are predictive?
+
+
+In the following chapter, we will look at the existing body of research for English Twitter users. Afterwards, we will detail our data gathering efforts, after which our research method is detailed. We then discuss the results gathered and conclude tot what extent we can accurately predict income level.
 
 \chapter{Background}
 Research into author profiling on Twitter is relatively new, especially in the field of income prediction. All prior work has focused on English-speaking Twitter users.
@@ -179,7 +186,7 @@ The primary data set for this research is a corpus of Dutch Twitter users with t
 
 In order to gather user profiles, we used all tweets from september 1th till september 5th, 2016. For each tweet in the corpus, we looked up its user by using the UG's in-house \textit{tweet2tab} tool to extract the user ID, username, real name and biography line for each user from the corpus. The user's biography line was used to find an occupational title. That title was then linked to an occupational class and consequently the average hourly income for that occupational class. The average hourly income was then multiplied by the average number of worked hours in the Netherlands to compute the average yearly income. All users with a known occupation were labeled with their average yearly income. This resulted in a collection of 36113 users with known occupations and incomes.
 
-After removing no longer existing accounts, private accounts and accounts with less than 1000 tweets, 21862 users were still available. These users were divided into two income classes, high (above 34.500 euros) and low (below 34.500 euros). Afterwards, 1500 users were randomly selected from each group and their tweets were gathered using the Twitter API. Retweets and non-Dutch tweets (as explained in the next section) were left out of the collection. Users with less than 500 Dutch, self-written tweets were discarded. From the remaining users, 1000 users were randomly selected per class for further use in our research. More details about the processing of the users for use in the collection will follow in the subsection on \textit{processing}.
+After removing no longer existing accounts, private accounts and accounts with less than 1000 tweets, 21862 users were still available. These users were divided into two income classes, high (above \euro 34.500) and low (below \euro 34.500). Afterwards, 1500 users were randomly selected from each group and their tweets were gathered using the Twitter API. Retweets and non-Dutch tweets (as explained in the next section) were left out of the collection. Users with less than 500 Dutch, self-written tweets were discarded. From the remaining users, 1000 users were randomly selected per class for further use in our research. More details about the processing of the users for use in the collection will follow in the section on \textit{processing}.
 
 \section{Annotation}
 In order to divide the users into income classes, they need to be annotated with their average yearly income. Distant supervision is used to find the average yearly income of a user. We look for an occupational title of a user in the user's biography line. In case a user has multiple occupations, we use the first one we can find. With the found title, we look up the user's occupational class and the average hourly income for that class. We then label the user with the average yearly income by multiplying the average hourly income with the average total hours worked in The Netherlands. 
@@ -197,23 +204,120 @@ These results confirm that our distant supervision method yields enough correctl
 % TODO: ADD SLOAN TO EVAL CRITERIA?
 
 \section{Processing}
-Concerning the users, after extracting users with a known occupation from the twitter2 corpus a number of processing steps are involved to bring the entire group of 36113 users to a manageable number of suitable users. First, users that no longer exist, have their profile set as private or have less than 1000 tweets are removed to ensure we can get enough data per user for our research. The users are checked by using the Lookup API of Twitter, which allows us to check users in batches of 100. The remaining users are saved in a Python dictionary and written to disk with the built-in Pickle library. Afterwards, the remaining users are divided in the chosen income classes. From each class 1500 users are randomly selected for further processing by using the random.choice function of the NumPy Python library \citep{numpy}. For these users, their latest 1000 tweets are collected. Retweets and non-Dutch tweets were discarded. The language classification of each tweet was performed by the \textit{langid} Python library \citep{langid}. Users with less than 500 suitable tweets were left out of the data set. For all remaining users the tweets are written to a text file per user per class. From the remaining set of users, 1000 were randomly selected per group to be used in our research.
+Concerning the users, after extracting users with a known occupation from the twitter2 corpus a number of processing steps are involved to bring the entire group of 36113 users to a manageable number of suitable users. First, users that no longer exist, have their profile set as private or have less than 1000 tweets are removed to ensure we can get enough data per user for our research. The users are checked by using the Lookup API of Twitter, which allows us to check users in batches of 100. The remaining users are saved in a Python dictionary and written to disk with the built-in Pickle library. Afterwards, the remaining users are divided in the chosen income classes. From each class 1500 users are randomly selected for further processing by using the random.choice function of the NumPy Python library \citep{numpy}. For these users, their latest 1000 tweets are collected. Retweets and non-Dutch tweets were discarded. The language classification of each tweet was performed by the langid Python library \citep{langid}. Users with less than 500 suitable tweets were left out of the data set. For all remaining users the tweets are written to a text file per user per class. From the remaining set of users, 1000 were randomly selected per group to be used in our research.
 
 After the processing of the users is completed, the tweets are prepared for further use. URL's, hashtags and usernames are removed and the tweets are tokenized so that relevant features can be derived from them. The processing relies on the \textit{TweetTokenizer} included in the NLTK Python library \citep{nltk}, a popular library for natural language processing in Python. As some features need to be generated from text tokenized per sentence, all tweets were run through a pre-trained NLTK sentence tokenizer created by \citet{punkt}. It was trained on the Dutch part of the Multilingual Corpus 1 (ECI), particularly on articles from the "De Limburger" newspaper.The resulting data was collected in a dictionary and written to disk with the Pickle library.
 
-\chapter{Method}
 
-\textit{To be written at a later time.}
+\chapter{Method}
+\citet{flekova} was a major source of inspiration for our methodology. However, as our research is limited in available time (7 weeks) and resources, we had to make some compromises in keep it workable, given all constraints. We mainly rely on the scikit-learn library \citep{sklearn} for the concrete implementation of our method. It provides a lot of tools for machine learning, from full blown classifiers and regression models to tools for evaluation. 
+
+\section{Features}
+Originally, we planned to implement all of the feature groups used in \citet{flekova}. Due to the constraints of our research, we could only adopt two of the four groups: surface and readability. To compensate for this, we added a third groups of features: n-grams. All groups will be discussed in more detail below.
+
+\subsection{Surface}
+From this group, we chose and implemented the following features:
+\begin{itemize}
+\item Length of a user's tweets in words
+\item Length of a user's tweets in characters
+\item Average word length in a user's tweets
+\item Ratio of words longer than 5 characters in a user's tweets
+\item Type-token ratio
+\end{itemize}
+
+As these features mostly rely on counting words and performing some basic calculations, they were relatively easy to implement. They are all based on tokenized tweets without punctuation. The last two features partly overlap with the group of readability features as they are considered predictors of readability \citep{flekova}.
+
+\subsection{Readability}
+\citet{flekova} used a host of readability measures. They all have some commonality in the way they are calculated, but differ in measuring scale and intended application. Instead of implementing each measure with all its peculiarities by hand, we relied on the readability library \citep{readability} for their calculation. This library provides a function that takes sentence tokenized text as its input and outputs the scores for several readability metrics. As sentence tokenization has already been performed by NLTK, we only need to provide the right input data for each user to calculate its scores. These texts do include punctuation symbols, as they are needed for the calculation of some measures.
+
+The readability metrics included in our research are:
+\begin{itemize}
+\item Automated Readability Index
+\item Coleman-Liau Index
+\item Flesch-Kincaid Grade Level
+\item Flesch Reading Ease
+\item Gunning-Fog Index
+\item LIX Index
+\item SMOG Index
+\end{itemize}
+
+\subsection{N-grams}
+For the final feature set, we looked at the syntax and style sets in the study by \citet{flekova}. 
+The syntax set proved unimplementable in this short timeframe. Although the Alpino parser \citep{alpino} could provide us with the needed part-of-speech tags, it could not do so reliably. The parser would sometimes crash on input it could not handle.
+
+We therefore moved on to the style set. Whilst some features like the ratio of words with numbers were easily implementable, others would prove more problematic. A lot of features depend on part-of-speech tags. Without a proper functioning parser we cannot implement those features at this moment. 
+We had no other choice than looking elsewhere for a possible feature set to add.
+
+Inspired by the work of fellow student Reinard van Dalen on classifying users based on their political preference, we decided to opt for word n-grams as our third and final feature set. We use a modified version of a function provided by our supervisor in order to generate the n-grams. It calls on NLTK's \textit{ngrams} function to compute all possible n-grams for a given text.
+
+We chose to include unigrams, bigrams and trigrams in our research. They are counted in a binary fashion: the fact that a certain n-gram occurs in a user's text is recorded, but the amount of occurrences is not taken into account.
+
+\section{Classification}
+As stated in the previous chapter, incomes are not available for every occupation, but only for a select number of occupational classes. The machine learning task ahead of us should therefore be framed as classification, instead of regression.
+Handling in the spirit of Flekova et al., we tried to find a classification method that is closest to the methods they have used, despite the difference in prediction task. They used linear regression and vector support regression with an RBF kernel as its non-linear counterpart for comparison. 
+
+Two classification methods came to mind: a support vector machine (SVM) and logistic regression. We chose to only use the latter. Scikit-learn's documentation on SVM's states that "if the number of features is much greater than the number of samples, the method is likely to give poor performance" \citep{svm}.
+As one of our feature sets is n-grams, one can expect thousands of features while the data set only consists of two thousand samples. We therefore shifted our focus to logistic regression and implemented it in our classifier using scikit-learn's \textit{LogisticRegression} module.
+
+\section{Evaluation}
+After implementing all features, the performance of the classifier and its composing features is assessed by using $k$-fold cross validation. In our case we apply a $k$ of 10, like \citet{flekova}.
+
+We rely on scikit-learn's \textit{KFold} module to split our data for each of the ten folds. For each fold, the results were printed to screen, including a list of most informative features. After each validation run the precision, recall and F1-scores are calculated in order to compare the different classifier setups. We test a host of different setups in order to find the most effective combination (i.e. giving us the highest F1-score with the least amount of features).  The tested feature compositions are shown in table \ref{evaluation-combinations}.
+
+The classifiers will all be compared to a baseline. As the data set consists of two equally large groups, a majority baseline cannot be used. We therefore use a random baseline. Given that there are two classes and they are equal in size, the chance that a single instance belongs to a certain class is 50 percent. From this follows that precision (P), recall (R) and the harmonic mean of both of them (F1-score) will all be 0.5. 
+
+\begin{table}[]
+\centering
+\begin{tabular}{llll}
+\hline
+\#          & \textbf{Set 1} & \textbf{Set 2} & \textbf{Set 3}    \\ \hline
+\textbf{1}  & Surface        & Readability    & N-grams (n=1-2-3) \\
+\textbf{2}  & Surface        & Readability    & N-grams (n=2-3)   \\
+\textbf{3}  & Surface        & Readability    & N-grams (n=1-3)   \\
+\textbf{4}  & Surface        & Readability    & N-grams (n=1-2)   \\
+\textbf{5}  & Surface        & Readability    & N-grams (n=3)     \\
+\textbf{6}  & Surface        & Readability    & N-grams (n=2)     \\
+\textbf{7}  & Surface        & Readability    & N-grams (n=1)     \\
+\textbf{8}  & Surface        & Readability    & -                 \\
+\textbf{9}  & Surface        & -              & N-grams (n=1-2-3) \\
+\textbf{10} & Surface        &                & N-grams (n=2-3)   \\
+\textbf{11} & Surface        & -              & N-grams (n=1-3)   \\
+\textbf{12} & Surface        & -              & N-grams (n=1-2)   \\
+\textbf{13} & Surface        & -              & N-grams (n=3)     \\
+\textbf{14} & Surface        & -              & N-grams (n=2)     \\
+\textbf{15} & Surface        & -              & N-grams (n=1)     \\
+\textbf{16} & Surface        & -              & -                 \\
+\textbf{17} & -              & Readability    & N-grams (n=1-2-3) \\
+\textbf{18} & -              & Readability    & N-grams (n=2-3)   \\
+\textbf{19} & -              & Readability    & N-grams (n=1-3)   \\
+\textbf{20} & -              & Readability    & N-grams (n=1-2)   \\
+\textbf{21} & -              & Readability    & N-grams (n=3)     \\
+\textbf{22} & -              & Readability    & N-grams (n=2)     \\
+\textbf{23} & -              & Readability    & N-grams (n=1)     \\
+\textbf{24} & -              & Readability    & -                 \\
+\textbf{25} & -              & -              & N-grams (n=1-2-3) \\
+\textbf{26} &                &                & N-grams (n=2-3)   \\
+\textbf{27} &                &                & N-grams (n=1-3)   \\
+\textbf{28} &                &                & N-grams (n=1-2)   \\
+\textbf{29} &                &                & N-grams (n=3)     \\
+\textbf{30} &                &                & N-grams (n=2)     \\
+\textbf{31} &                &                & N-grams (n=1)    
+\end{tabular}
+\caption{An overview of the classifier setups included in our evaluation.}
+\label{evaluation-combinations}
+\end{table}
+
+% TODO: ADD SOMETHING ABOUT THE BASELINE MEASURE WE COMPARE TO\\\\\
 
 
 \chapter{Results and Discussion}
 
-\textit{To be written at a later time.}
+\textit{To be written on Tuesday.}
 
 
 \chapter{Conclusion}
 
-\textit{To be written at a later time.}
+\textit{To be written on Tuesday.}
 
 
 %----------------------------------------------------------------------------------------
