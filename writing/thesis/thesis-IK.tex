@@ -29,6 +29,7 @@ headinclude,footinclude, % Extra spacing for the header and footer
 %BCOR5mm, % Binding correction
 ] {book}% {scrartcl}
 \usepackage{eurosym}
+\usepackage{booktabs}
 
 \input{structure.tex} % Include the structure.tex file which specified the document structure and layout
 
@@ -93,7 +94,8 @@ L\'eon Melein\\[2,5cm]
 Information Science\\  %Information Science\\
 L\'eon Melein\\
 S2580861\\
-\today
+\today\\
+Supervisor: B. Plank
 \end{titlepage}
 \hypersetup{pageanchor=true}
 
@@ -107,7 +109,8 @@ S2580861\\
 \chapter*{Abstract}
 \markboth{Abstract}{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-\textit{To be written on Tuesday.}
+\textit{To be modified to final thesis!}
+Income prediction is a relatively undiscovered aspect of author profiling. Early research on English-speaking Twitter users linked to occupations and average incomes has been promising, but there is no comparable research for Dutch speakers yet. We want to find out to what extent profiling can predict the income level of Dutch-speaking Twitter users. We do so by applying the methodology as \citet{flekova} at these users. Dutch-speaking users will be linked to their occupation and the average income for that occupation to establish ground truth and which stylometric features correlate significantly with income. Afterwards, we use these features to build a classifier, in order to find an answer to our research question.
 
 
 %----------------------------------------------------------------------------------------
@@ -152,8 +155,7 @@ An example: a cable company customer with a relatively low income probably has a
 
 Despite the existing research into English speaking Twitter users and their respective incomes, there is currently no comparable research for Dutch speaking Twitter users. We will therefore focus our research on the following question: to what extent is it possible to accurately predict the income level of a Dutch Twitter user and which stylometric features are predictive?
 
-
-In the following chapter, we will look at the existing body of research for English Twitter users. Afterwards, we will detail our data gathering efforts, after which our research method is detailed. We then discuss the results gathered and conclude tot what extent we can accurately predict income level.
+The rest of this thesis is organized as follows. Chapter 2 gives on overview of earlier work on income classification with English speaking users, as well as all prerequisites for studying income classification. Chapter 3 details our data gathering efforts and goes into detail about our labeling algorithm. Chapter 4 builds on that with our method to find the best combination of features for a classifier on income. In chapter 5, we will discuss the results of the different feature setups tested. Finally, in chapter 6 we will look back at the study as a whole and answer our research question.
 
 \chapter{Background}
 Research into author profiling on Twitter is relatively new, especially in the field of income prediction. All prior work has focused on English-speaking Twitter users.
@@ -199,8 +201,9 @@ Finally, to derive the average yearly income we need to know the average worked 
 
 To evaluate the performance of our distant supervision method a random survey of 100 users per class was taken. Their labels were manually checked in a two class setting as mentioned in the previous subsection. The labels were considered correct if they appeared in the biography of a user, the user was a human and the occupational title was used to indicate paying occupation, not a hobby or study. The accuracy over the whole group of 200 users was 68,5 percent, with 59 percent in the low class and 78 percent in the high class. In 33 cases, the labels were wrong because the account was simply not used by a person but by a company. As there is no surefire way to distinguish between human and non-human users, we disregard these cases. The overall accuracy without these cases is 82 percent. The last few cases that were wrongly labeled consist of hobbies or voluntary work labelled as an occupation (15 cases), occupational titles that got bodged during the transformation of the needed file (11 cases) and four miscellaneous cases, which consist of users describing their former occupation in a non-trivially detectable way.
 
-These results confirm that our distant supervision method yields enough correctly labeled data for our research, even though it is far from perfect. Possible future improvements of the method will follow in the \textit{Discussion} section.
+These results confirm that our distant supervision method yields enough correctly labeled data for our research, even though it is far from perfect. Possible future improvements of the method will follow in the \textit{Future Work} section of the Conclusion chapter.
 
+% TODO: ADD LINKS TO CHAPTERS
 % TODO: ADD SLOAN TO EVAL CRITERIA?
 
 \section{Processing}
@@ -262,11 +265,12 @@ As one of our feature sets is n-grams, one can expect thousands of features whil
 \section{Evaluation}
 After implementing all features, the performance of the classifier and its composing features is assessed by using $k$-fold cross validation. In our case we apply a $k$ of 10, like \citet{flekova}.
 
-We rely on scikit-learn's \textit{KFold} module to split our data for each of the ten folds. For each fold, the results were printed to screen, including a list of most informative features. After each validation run the precision, recall and F1-scores are calculated in order to compare the different classifier setups. We test a host of different setups in order to find the most effective combination (i.e. giving us the highest F1-score with the least amount of features).  The tested feature compositions are shown in table \ref{evaluation-combinations}.
+For each fold, the results were printed to screen, including a list of most informative features. After each validation run the precision, recall and F1-scores are calculated in order to compare the different classifier setups. We test a host of different setups in order to find the most effective combination (i.e. giving us the highest F1-score with the least amount of features).  The tested feature compositions are shown in table \ref{evaluation-combinations}.
 
-The classifiers will all be compared to a baseline. As the data set consists of two equally large groups, a majority baseline cannot be used. We therefore use a random baseline. Given that there are two classes and they are equal in size, the chance that a single instance belongs to a certain class is 50 percent. From this follows that precision (P), recall (R) and the harmonic mean of both of them (F1-score) will all be 0.5. 
+The classifiers will all be compared to a baseline. As the data set consists of two equally large groups, a majority baseline cannot be used. We therefore use a random baseline. Given that there are two classes and they are equal in size, the chance that a single instance belongs to a certain class is 50 percent ($Pcorrect = 0.5$). We rely on scikit-learn's \textit{StratifiedKFold} module to split our data for each of the ten folds. The stratification makes sure that the equality in class size in our data set will be carried through to the individual test and training sets and thus guarantees that our baseline will be the same on each run.
 
 \begin{table}[]
+\caption{An overview of the classifier setups included in our evaluation.}
 \centering
 \begin{tabular}{llll}
 \hline
@@ -280,7 +284,7 @@ The classifiers will all be compared to a baseline. As the data set consists of 
 \textbf{7}  & Surface        & Readability    & N-grams (n=1)     \\
 \textbf{8}  & Surface        & Readability    & -                 \\
 \textbf{9}  & Surface        & -              & N-grams (n=1-2-3) \\
-\textbf{10} & Surface        &                & N-grams (n=2-3)   \\
+\textbf{10} & Surface        & -                & N-grams (n=2-3)   \\
 \textbf{11} & Surface        & -              & N-grams (n=1-3)   \\
 \textbf{12} & Surface        & -              & N-grams (n=1-2)   \\
 \textbf{13} & Surface        & -              & N-grams (n=3)     \\
@@ -296,28 +300,122 @@ The classifiers will all be compared to a baseline. As the data set consists of 
 \textbf{23} & -              & Readability    & N-grams (n=1)     \\
 \textbf{24} & -              & Readability    & -                 \\
 \textbf{25} & -              & -              & N-grams (n=1-2-3) \\
-\textbf{26} &                &                & N-grams (n=2-3)   \\
-\textbf{27} &                &                & N-grams (n=1-3)   \\
-\textbf{28} &                &                & N-grams (n=1-2)   \\
-\textbf{29} &                &                & N-grams (n=3)     \\
-\textbf{30} &                &                & N-grams (n=2)     \\
-\textbf{31} &                &                & N-grams (n=1)    
+\textbf{26} & -              & -                & N-grams (n=2-3)   \\
+\textbf{27} & -              & -               & N-grams (n=1-3)   \\
+\textbf{28} & -              & -               & N-grams (n=1-2)   \\
+\textbf{29} & -              & -              & N-grams (n=3)     \\
+\textbf{30} & -              & -                & N-grams (n=2)     \\
+\textbf{31} & -              & -                & N-grams (n=1)    
 \end{tabular}
-\caption{An overview of the classifier setups included in our evaluation.}
 \label{evaluation-combinations}
 \end{table}
 
-% TODO: ADD SOMETHING ABOUT THE BASELINE MEASURE WE COMPARE TO\\\\\
-
 
 \chapter{Results and Discussion}
+\begin{table}[]
+\caption{An overview of precision, recall and F1-scores for the different classifier setups.}
+\label{results-overview}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Setup} & \textbf{Precision (P)} & \textbf{Recall (R)} & \textbf{F1-score} \\ \midrule
+\textbf{Baseline} & 0.50                   & 0.50                & 0.50              \\
+\textbf{1}        & 0.72                   & 0.72                & 0.72              \\
+\textbf{2}        & 0.69                   & 0.69                & 0.69              \\
+\textbf{3}        & 0.70                   & 0.70                & 0.70              \\
+\textbf{4}        & 0.71                   & 0.71                & 0.71              \\
+\textbf{5}        & 0.66                   & 0.66                & 0.66              \\
+\textbf{6}        & 0.70                   & 0.70                & 0.70              \\
+\textbf{7}        & 0.69                   & 0.69                & 0.69              \\
+\textbf{8}        & 0.69                   & 0.69                & 0.69              \\
 
-\textit{To be written on Tuesday.}
+\textbf{9}         & 0.71                   & 0.71                & 0.71              \\
+\textbf{10}       & 0.70                   & 0.70                & 0.70              \\
+\textbf{11}       & 0.70                   & 0.70                & 0.70              \\
+\textbf{12}       & 0.71                   & 0.71                & 0.71              \\
+\textbf{13}       & 0.67                   & 0.67                & 0.67              \\
+\textbf{14}       & 0.71                   & 0.70                & 0.70              \\
+\textbf{15}       & 0.70                   & 0.70                & 0.70              \\
+\textbf{16}       & 0.56                   & 0.56                & 0.56              \\
+
+\textbf{17}        & 0.59                   & 0.59                & 0.59              \\
+\textbf{18}       & 0.72                   & 0.72                & 0.72              \\
+\textbf{19}       & 0.71                   & 0.71                & 0.71              \\
+\textbf{20}       & 0.72                   & 0.72                & 0.72              \\
+\textbf{21}       & 0.68                   & 0.68                & 0.68              \\
+\textbf{22}       & 0.69                   & 0.69                & 0.69              \\
+\textbf{23}       & 0.70                   & 0.70                & 0.70              \\
+\textbf{24}       & 0.57                   & 0.57                & 0.57              \\
+
+\textbf{25}       & 0.72                   & 0.72                & 0.72              \\
+\textbf{26}       & 0.70                   & 0.70                & 0.70              \\
+\textbf{27}       & 0.71                   & 0.71                & 0.71              \\
+\textbf{28}       & 0.72                   & 0.72                & 0.72              \\
+\textbf{29}       & 0.68                   & 0.68                & 0.68              \\
+\textbf{30}       & 0.69                   & 0.69                & 0.69              \\
+\textbf{31}       & 0.70                   & 0.70                & 0.70              \\ \bottomrule
+\end{tabular}
+\end{table}
+
+All evaluation results for the different classifier setups and our baseline method can be found in table \ref{results-overview}. All setups outperformed our baseline, but differ quite a lot in how much. We will discuss a few interesting findings below.
+
+One interesting observation is that feature groups can be almost equal in performance when acting alone, but can strengthen one another when used together. A good example of this is the combination of surface and readability features. Alone, they show roughly equal performance ($F1_{\text{surface}} = 0.56$,  $F1_{\text{readability}} = 0.57$). As mentioned before, some surface features are also seen as indicative for readability, hence the similarity in performance. Both outperform our baseline method, but by just a little. When we combine them, however, the F1-score climbs to 0.69, which is well above our baseline and not that far away from the best performing setups in our test.
+
+The opposite is also observed during our tests: combining surface features with uni-, bi- and trigrams results in an F1-score of 0.59, whereas that same combination without the readability features reached an F1-score of 0.72. It shows us that finding the right balance between features is crucial for developing a proper classifier. A possible explanation in this particular case is that the readability features and the trigrams provide contradicting information, which causes our performance to drop. This hypothesis is backed up by the performance of the same setup without trigrams: the F1-score in this case rises back to 0.72.
+
+Now, for determining which classifier is the most effective. The are five setups that showed equal performance, all reaching an F1-score of 0.72. The setups are:
+\begin{itemize}
+\item Surface + Readability + N-grams (n=1-2-3)
+\item Readability + N-grams (n=2-3)
+\item Readability + N-grams (n=1-2)
+\item N-grams (n=1-2-3)
+\item N-grams (n=1-2)
+\end{itemize}
+
+As we prefer the most effective setup, the N-grams (n=1-2) setup provides the best performance with the least amount of features. Although N-grams produce a lot of individual features, they can be easily generated, in contrast with many other features. The wealth of individual features present in this setup is probably the reason it performed so well, despite them being very rudimentary data points without any inherent value.
+Generating N-grams can however take some time. Given that our setup with only surface and readability features reached an F1-score of 0.69, which is very close to the top performing setups, this setup deserves special consideration. It can be a very interesting option in time or resource limited environments as it only uses twelve individual features, as opposed the thousands of individual features n-grams introduce.
+
 
 
 \chapter{Conclusion}
+\section{Summary}
+We started our research with the question: \textit{to what extent is it possible to accurately predict the income level of a Dutch Twitter user and which stylometric features are predictive?} Earlier work on English speaking users looked promising. \citet{flekova} concluded that differences in style could be used to "tailor the style of a document without altering its topic to either income or age individually". This matched our hopes for a potential application of this technique: tailoring customer service communication to customers without having to ask them for background information.
 
-\textit{To be written on Tuesday.}
+As there had not been any comparable study on Dutch users, we had to create a dataset from scratch. By employing the labeling strategy established by \citet{sloan}, we were able to create a corpus of 21862 users with known incomes. They were divided into two two income classes, one above and one below \euro 34.500. From each class thousand users were selected for further research. Their 500 latest tweets were preprocessed for use in our classifier.
+
+In order to classify our users we employed a logisitic regression method provided by Scikit-learn \citep(sklearn) with three sets of features: surface, readability and n-gram features. After testing a host of different feature group combinations on our classifier we managed to get a maximum F1-score of 0.72 using 10-fold cross validation, beating our baseline F1 of 0.5. The feature set with only unigrams and bigrams proved the most effective, providing the highest F1 score with the least amount of features.
+
+The set with surface and readability features combined does deserve special consideration. Although it does not perform as well as the unigrams and bigrams, it comes close with an F1 score of .69, using only twelve individual features. In enviroments were resources or time is limited, this setup may prove a very interesting option.
+
+\section{Limitations}
+As our study was limited in the time and resources available it is far from conclusive. We will describe a few of its limitation below.
+
+\subsection{Availability of income data}
+The first important limitation of our study is the level of detail in the income data used to label our users. As Statistics Netherlands does not provide incomes for all occupations, we were forced to use and predict income classes instead of individual incomes. By using the average incomes for each two-digit group there is a possibility that there is a large gap between the predicted income and the actual income of a user, which might lead to erroneous classifications. As we have no full income data, we cannot assess the size of the problem at this time.
+
+\subsection{Labeling strategy}
+Our labeling strategy worked reasonably well, as demonstrated by the random survey in chapter 3. However, it is far from perfect. One problem is that is cannot distinguish between human and non-human users. Although this is such a complex topic that it would warrant a separate study, adding this capability would help to reduce the noise in our dataset. Another problem is that out labeling method relies on just one heuristic: it will always take the first occupation it can find, even if there are multiple occupations mentioned by a user. It currently has no way to disambiguate between multiple occupations. We will present possibilities for future research on our labeling strategy in the next section.
+
+\subsection{Class and classifier setup}
+We originally planned to use two different class setups: a two class setting with high and low classes and a six class setting used by Statistics Netherlands in their research (\euro 0 - \euro 10.000, \euro 10.000 - \euro 20.000, \euro 20.000 - \euro 30.000, \euro 30.000 - \euro 40.000, \euro 40.000 - \euro 50.000 and \euro 50.000 or more). As our data gathering and annotation efforts proved quite challenging, given that there was no prior gathering and annotation method for Dutch users, we decided to limit ourselves to the two class setting only.
+
+For the same reason, we had to limit our exploration of different classifier setups. We planned to do a thorough review like\citet{flekova} where each individual feature was measured on its predictiveness using two different regression methods. We limited ourselves to one classification method, logistic regression, as the documentation of scikit-learn indicated that support vector machines would likely give poor performance on our feature sets \citep{svm}. This would have mainly affected setups with n-gram features. Exploration of different classification methods may prove worthwhile in improving results.
+
+Regarding the included features, we only assessed the influence of different feature set combinations, including different levels of n-grams as they greatly influence the amount of features available to our classifier. This limited assessment already yielded 31 distinct feature group combinations to be evaluated. As this proved time consuming, more detailed evaluations had to be left out.
+
+\section{Future work}
+A mayor boost to future work on profile Dutch authors on income would be the availability of incomes on a full four-digit level so individual incomes can be predicted and not just income classes. However, as we depend on Statistics Netherlands for our income data, it is out of our hands. For now, there are three clear avenues for future research using the available data.
+
+\subsection{Improvement of labeling method}
+Although our current labeling method is a good basis, it could become more robust. Disambiguation between multiple occupations by selecting the one with the highest ISCO class would be one possibility for improving our labeling accuracy, as it would also limit the amount of hobbies, studies and volunteer's work falsely detected as occupations in cases where multiple candidate occupations are present.
+
+\subsection{Different class setups}
+As we only tested a two class setup, it would make sense to test the performance of our classifier on a data set with more than two classes. This would also bring the income classes to the actual income of the user, thus resulting in more valuable predictions. It would be interesting to see how the predictive power of certain feature sets hold up in a different situation.
+
+\subsection{In-depth analysis of features}
+As we only investigated the influence of entire feature groups on our classifier's performance, it might be worthwhile to research the influence of individual features in the surface and readability groups. It might become clear that an entire different mix of individual features yields better results than the best ones our current setup could provide.
+
+\section{Final statement}
+This study has been a first exploration of the possibilities of profiling Dutch authors on their income. We hope that this may be the basis of further research and, in combination with more detailed income data, be a stepping stone towards predicting the income of individual Dutch authors. 
 
 
 %----------------------------------------------------------------------------------------

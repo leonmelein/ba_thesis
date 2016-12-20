@@ -9,6 +9,9 @@ from sklearn.model_selection import KFold
 import numpy as np
 import random
 import pickle
+
+from sklearn.model_selection import StratifiedKFold
+
 from machinelearning.featurizers.Featurizer import Featurizer
 
 
@@ -190,6 +193,80 @@ def kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams
         # For each generated split, create the requested data split and perform the classification task
         run = 1
         for train, test in kf.split(users):
+
+            print("\n===== RUN {} OF {} =====".format(run, k))
+            print("Splitting data…")
+            X_train, X_test, y_train, y_test = users[train], users[test], labels[train], labels[test]
+            print("- # of train instances: {}\n- # of test instances: {}".format(len(X_train), len(X_test)))
+
+            # Save the input and output labels of each classifier run
+            y_test_total = y_test_total + y_test.tolist()
+            y_predicted_total = y_predicted_total + perform_classification(X_train, X_test, y_train, y_test,
+                                                                           featureset=feature_set, ngrams=ngrams,
+                                                                           prefeaturized=prefeaturized)
+            run += 1
+
+        print("\n===== FINAL RESULTS =====")
+        # Report the results of our k-fold validation
+        report = classification_report(y_test_total, y_predicted_total, [0, 1], ["low", "high"])
+        print(report)
+        return report
+
+    print("\n===== CLASSIFIER END =====")
+
+def strat_kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams="1-2", prefeaturized=False,
+                   ignored_features=[], userfile="../supportdata/output_files/prefeaturized_users.pickle"):
+    """
+    Performs a k-fold validation of the classifier and prints the outcomes to screen.
+
+    :param k: number of validations as Int (default: 1).
+    :return: None
+    """
+
+    # Using 42 as seed to ensure reproducible results
+    # 42? "Answer to the Ultimate Question of Life, The Universe, and Everything" (The Hitchhiker's Guide to the Galaxy)
+    seed = 42
+
+    print("===== CLASSIFIER START =====")
+
+    print("Loading data…")
+    if prefeaturized:
+        data = load_user_data(userfile=userfile)
+    else:
+        data = load_user_data()
+
+    print("- Total # of instances:", len(data))
+
+    # Unpack user data into users and labels for further use
+    users = np.array([users for users, label in data])
+    labels = np.array([label for sentence, label in data])
+
+    if k == 1:
+        # In case of a single run, split the dataset manually at 75% training, 25% test
+        print("Splitting data…")
+        split_point = int(0.75 * len(data))
+        X_train, X_test = users[:split_point], users[split_point:]
+        y_train, y_test = labels[:split_point], labels[split_point:]
+
+        # Check that our train and test instances have both data and labels
+        assert (len(X_train) == len(y_train))
+        assert (len(X_test) == len(y_test))
+        print("- # of train instances: {}\n- # of test instances: {}".format(len(X_train), len(X_test)))
+
+        # Perform the classification task with the split data
+        perform_classification(X_train, X_test, y_train, y_test, featureset=feature_set, ngrams=ngrams,
+                               prefeaturized=prefeaturized)
+
+    else:
+        y_test_total, y_predicted_total = [], []
+
+        # In case of multiple runs, calculate the needed data splits according to the number of runs requested (= k)
+        print("Calculating {}-fold splits…".format(k))
+        kf = StratifiedKFold(n_splits=k, random_state=seed)
+
+        # For each generated split, create the requested data split and perform the classification task
+        run = 1
+        for train, test in kf.split(users, labels):
 
             print("\n===== RUN {} OF {} =====".format(run, k))
             print("Splitting data…")
