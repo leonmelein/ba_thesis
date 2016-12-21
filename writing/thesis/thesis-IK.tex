@@ -112,7 +112,7 @@ Supervisor: B. Plank
 \addcontentsline{toc}{chapter}{Abstract}
 Income prediction is a relatively undiscovered aspect of author profiling. Early research on English speaking like \citet{flekova}, who linked Twitter users  to occupations and their respective average incomes, has been promising, but there is no comparable research for Dutch speakers yet. In this thesis, we explore to what extent author profiling can predict the income level of Dutch users.
 
-We do so by creating a dataset of 2000 Twitter users. These are divided into two income classes, as there currently is no complete income data available for individual occupations in The Netherlands, but only for groups of occupations. We use distant supervision to annotate users with their occupational class and their income. We then extract a number of surface, readability and n-gram features from the users' posts. Using logistic regression, we try to classify the users on their income class with those features.
+We do so by creating a dataset of 2000 Twitter users. These are divided into two income classes as there currently is no complete income data available for individual occupations in The Netherlands.  We are therefore forced to use groups of occupations, as their incomes are known. We use \textit{distant supervision} to annotate users with their occupational class and their income. We then extract a number of surface, readability and n-gram features from the users' posts. Using logistic regression, we try to classify the users on their income class with those features.
 
 After testing various feature groupings, the classifier was the most effective with unigram and bigram features, reaching an F1-score of 0.72. Although this indicates that  profiling can predict a user's income class to a very large extent, this can only be seen as a first indication as the scope of this study is limited. With clear directions for future improvement, we hope that this study may be a stepping stone towards the prediction of individual incomes for Dutch authors.
 
@@ -174,33 +174,31 @@ Research into author profiling on Twitter is relatively new, especially in the f
 The most recent study was performed by \citet{flekova}. Their goal was to find a viable writing style-based predictor for age and income. For each dimension, a different data set was used. 
 Regarding income, an off the self data set was used, which will be discussed in more detail later on. It contained almost six thousand Twitter users labeled with their occupation. The researchers used the occupations to label the users with the mean UK yearly income for their occupation. This was done regardless of the location of the users involved (e.g., an English-speaking user from Amsterdam would also be assigned a UK income). 
 As the exact income for every occupation was known, the machine learning task was framed as regression. Flekova et al. codified stylistic variation into a number of features, which were grouped into four categories: surface, readability, syntax and style. 
-After performing a ten-fold cross validation with both linear and non-linear regression methods they discovered that readability metrics like the \textit{Flesch Reading Ease} metric and the relative use of pronouns correlated with income over age (\(r_{income} = .297,  r_{Flesch} = .315;  p < 0.001 \) ). They concluded that the differences in style can be used to "tailor the style of a document without altering the topic to suite either age or income individually".
+After performing a ten-fold cross validation with both linear and non-linear regression methods they discovered that readability metrics like the \textit{Flesch Reading Ease} metric and the relative use of pronouns correlated with income over age. They concluded that the differences in style can be used to "tailor the style of a document without altering the topic to suite either age or income individually".
 
 The data set used in \citet{flekova} was created during an earlier study by \citet{pietro}. They used the corpus to classify users according to their occupational class. 
 The occupational titles and classes used were gathered from the UK Standard Occupational Classification (SOC) \citep{uksoc}. The SOC is a hierarchical classification of occupations. It has four levels, starting with nine very general classes and terminating in hundreds of very specific classes. Each level is indicated with a different number of digits. The coarsest level is indicated with one digit and the finest level with four digitals (e.g., class 1: 'managers, directors and senior officials' and class 1116: 'elected officials and representatives', respectively). The classification is based on the International Standard Classification of Occupations \citep{isco}.
-For each occupation they used the Twitter REST API to find at most 200 users for each occupation. The accumulated users were divided into the three-digit groups they belong to. Users that were companies, had no description or had a contradicting description were removed from the collection by hand. Furthermore, three-digit groups with less than 45 users were discarded. The final collection contained 5191 users divided into 55 three-digit groups.
+For each occupation they used the \textit{Twitter REST API}\footnote{https://dev.twitter.com/rest/public} to find at most 200 users for each occupation. The accumulated users were divided into the three-digit groups they belong to. Users that were companies, had no description or had a contradicting description were removed from the collection by hand. Furthermore, three-digit groups with less than 45 users were discarded. The final collection contained 5191 users divided into 55 three-digit groups.
 
-Preotiuc-Pietro et al. mention two papers in their related work section that describe different labeling strategies. Both do not annotate users manually. They all employ \textit{distant supervision}, a method that labels data automatically, given an existing form of ground truth. In the Preotiuc-Pietro study, Twitter users were labeled by looking for a self-disclosed occupational title. In order to detect such titles they relied on a list of occupational titles from the SOC. This list forms the ground truth needed for labeling.
+\citet{pietro} mention two papers in their related work section that describe different labeling strategies. Both do not annotate users manually. They all employ \textit{distant supervision}, a method that labels data automatically, given an existing form of ground truth. In the Preotiuc-Pietro study, Twitter users were labeled by looking for a self-disclosed occupational title. In order to detect such titles they relied on a list of occupational titles from the SOC. This list forms the ground truth needed for labeling.
 
-The first is a paper by \citet{li} which tries to label users with the name of their employer, among other things. In this study, Twitter profiles were cross-linked with profiles on a different social networking site, Google Plus. To ensure the both profiles are interrelated they looked at the friend connections on both sites and made sure that there was a large enough intersection between them. The employer name was extracted from the Google Plus profile and used to label the Twitter user. Using this method they were able to collect 7208 users with a known employer. 
+The first is a paper by \citet{li} which tries to label users with the name of their employer, among other things. In this study, Twitter profiles were cross-linked with profiles on a different social networking site, Google Plus. To ensure both profiles are interrelated they looked at their friend connections on both sites and made sure that there was a large enough intersection between them. The employer name was extracted from the Google Plus profile and used to label the Twitter user. Using this method they were able to collect 7208 users with a known employer. 
 This strategy relies heavily on profiles from networking sites other than Twitter, like Google Plus or LinkedIn. Without unfettered access or a large number of cross-linkable profiles on both platforms, it cannot be used for labeling data.
 
 The second strategy only relies solely on the occupational titles from the SOC and profiles on Twitter. \citet{sloan} labeled users with class in the National Statistics - Socio-Economic Classification (NS-SEC), a classification closely related and interoperable with the SOC. 
-They extracted users from a feed provided by the Twitter API, which constitutes a 1 percent representative sample of public tweets. For each user, they looked for an self-disclosed occupational title in the biography line. The titles they used for detection were gathered from the SOC. After finding an occupation, the user would be labeled with their NS-SEC class by looking up the SOC class for their occupation and then looking up the corresponding NS-SEC class. In case a user mentioned multiple occupations, the authors hypothesized that the first one found would be most important and therefore should be used. 
-Using this method they were able to label 32032 users with their NS-SEC class. A random survey of 1000 users resulted in an accuracy of 57,8 percent. The authors mention several caveats of this method. Hobbies and former occupations may be falsely detected as current occupations. Commonly occurring phrases like "Doctor Who fan" may also result in false matches.
+They extracted users from a feed provided by the \textit{Twitter REST API}, which constitutes a one percent representative sample of public tweets. For each user, they looked for an self-disclosed occupational title in the biography line. The titles they used for detection were gathered from the SOC. After finding an occupation, the user would be labeled with their NS-SEC class by looking up the SOC class for their occupation and then looking up the corresponding NS-SEC class. In case a user mentioned multiple occupations, the authors hypothesized that the first one found would be most important and therefore should be used. 
+Using this method they were able to label 32032 users with their NS-SEC class. A random survey of 1000 users resulted in an accuracy of 57.8 percent. The authors mention several caveats of this method. Hobbies and former occupations may be falsely detected as current occupations. Commonly occurring phrases like "Doctor Who fan" may also result in false matches.
 
-This second strategy depends a lot less on outside data. It is therefore easier to implement and use in further research, given that the needed data is available.  For this thesis, a corpus of Dutch tweets and their authors available is already at the University of Groningen and data on occupational titles and incomes is available from the Dutch government bureau Statistics Netherlands. It therefore makes sense to use this strategy for our data collection and annotation efforts. The implementation details of this strategy follow in the next chapter.
-
-% TODO: FIND OUT HOW TO REPORT STATICTICAL FINDINGS THE RIGHT WAY
+This second strategy depends a lot less on outside data. It is therefore easier to implement and use in further research, given that the needed data is available.  For this thesis, a corpus of Dutch tweets and their authors available is already at the University of Groningen and data on occupational titles and incomes is available from the Dutch government bureau Statistics Netherlands\footnote{https://www.cbs.nl/en-gb}. It therefore makes sense to use this strategy for our data collection and annotation efforts. The implementation details of this strategy follow in the next chapter.
 
 \chapter{Data and Material}
 \label{datagathering}
 \section{Collection} 
-The primary data set for this research is a corpus of Dutch Twitter users with their 500 latest tweets, categorized on income class. As there was no suitable data set available off the shelf, a new corpus was created. As a starting point, the University of Groningen (UG) twitter2 corpus was used to gather user profiles. The twitter2 corpus contains all Dutch tweets provided by Twitter's Streaming API, which constitutes a 1 percent representative sample of public messages posted on Twitter. 
+The primary data set for this research is a corpus of Dutch Twitter users with their 500 latest tweets, categorized on income class. As there was no suitable data set available off the shelf, a new corpus was created. As a starting point, the University of Groningen (UG) \textit{twitter2} corpus was used to gather user profiles. The twitter2 corpus contains all Dutch tweets provided by Twitter's \textit{Streaming API}, which constitutes a one percent representative sample of public messages posted on Twitter. 
 
-In order to gather user profiles, we used all tweets from september 1th till september 5th, 2016. For each tweet in the corpus, we looked up its user by using the UG's in-house \textit{tweet2tab} tool to extract the user ID, username, real name and biography line for each user from the corpus. The user's biography line was used to find an occupational title. That title was then linked to an occupational class and consequently the average hourly income for that occupational class. The average hourly income was then multiplied by the average number of worked hours in the Netherlands to compute the average yearly income. All users with a known occupation were labeled with their average yearly income. This resulted in a collection of 36113 users with known occupations and incomes.
+In order to gather user profiles, we used all tweets from september 1th till september 5th, 2016. For each tweet in the corpus, we looked up its user by using the UG's in-house \textit{tweet2tab} tool to extract the user ID, username, real name and biography line for each user from the corpus. The user's biography line was used to find an occupational title. That title was then linked to an occupational class and consequently the average hourly income for that occupational class. The average hourly income was then multiplied by the average number of worked hours in the Netherlands to compute the average yearly income. All users with a known occupation were labeled with their average yearly income. This resulted in a collection of 36,113 users with known occupations and incomes.
 
-After removing no longer existing accounts, private accounts and accounts with less than 1000 tweets, 21862 users were still available. These users were divided into two income classes, high (above \euro 34.500) and low (below \euro 34.500). Afterwards, 1500 users were randomly selected from each group and their tweets were gathered using the Twitter API. Retweets and non-Dutch tweets (as explained in the next section) were left out of the collection. Users with less than 500 Dutch, self-written tweets were discarded. From the remaining users, 1000 users were randomly selected per class for further use in our research. More details about the processing of the users for use in the collection will follow in the section on \textit{processing}.
+After removing no longer existing accounts, private accounts and accounts with less than 1000 tweets, 21,862 users were still available. These users were divided into two income classes, high (above \euro 34,500) and low (below \euro 34,500). Afterwards, 1500 users were randomly selected from each group and their tweets were gathered using the Twitter REST API. Retweets and non-Dutch tweets (as explained in the next section) were left out of the collection. Users with less than 500 Dutch, self-written tweets were discarded. From the remaining users, a thousand were randomly selected per class for further use in our research. More details about processing users for use in the collection will follow in the section on \textit{processing}.
 
 \section{Annotation}
 In order to divide the users into income classes, they need to be annotated with their average yearly income. Distant supervision is used to find the average yearly income of a user. We look for an occupational title of a user in the user's biography line. In case a user has multiple occupations, we use the first one we can find. With the found title, we look up the user's occupational class and the average hourly income for that class. We then label the user with the average yearly income by multiplying the average hourly income with the average total hours worked in The Netherlands. 
@@ -211,14 +209,14 @@ First, we use a list of occupational titles and their respective classes from \c
 Second, we use a list of occupational classes and their respective average incomes from \citet{uurlonen} to look up the average hourly income for a particular class. We use the two-digit classes, as the incomes for almost all of them is known\footnote{There were no average incomes available for the two-digit (submajor) groups 62, 82, 92 and 95. They are therefore left out of the rest of our research.}. For most three- and four-digit classes, incomes aren't provided by Statistics Netherlands. Furthermore, the incomes among the two-digit groups varies enough in order to create a viable two-class split of our data.
 Finally, to derive the average yearly income we need to know the average worked hours per year in The Netherlands. According to the \citet{hours} the average Dutch worker makes 1677 hours a year.
 
-To evaluate the performance of our distant supervision method a random survey of 100 users per class was taken. Their labels were manually checked in a two class setting as mentioned in the previous subsection. The labels were considered correct if they appeared in the biography of a user, the user was a human and the occupational title was used to indicate paying occupation, not a hobby or study. The accuracy over the whole group of 200 users was 68,5 percent, with 59 percent in the low class and 78 percent in the high class. In 33 cases, the labels were wrong because the account was simply not used by a person but by a company. As there is no surefire way to distinguish between human and non-human users, we disregard these cases. The overall accuracy without these cases is 82 percent. The last few cases that were wrongly labeled consist of hobbies or voluntary work labelled as an occupation (15 cases), occupational titles that got bodged during the transformation of the needed file (11 cases) and four miscellaneous cases, which consist of users describing their former occupation in a non-trivially detectable way.
+To evaluate the performance of our distant supervision method a random survey of 100 users per class was taken. Their labels were manually checked in a two class setting as mentioned in the previous subsection. The labels were considered correct if they appeared in the biography of a user, the user was a human and the occupational title was used to indicate paying occupation, not a hobby or study. The accuracy over the whole group of 200 users was 68.5 percent, with 59 percent in the low class and 78 percent in the high class. In 33 cases, the labels were wrong because the account was simply not used by a person but by a company. As there is no surefire way to distinguish between human and non-human users, we disregard these cases. The overall accuracy without these cases is 82 percent. The last few cases that were wrongly labeled consist of the following cases. In 15 cases, hobbies or voluntary work were labelled as an occupation. In 11 cases, occupational titles got bodged during the transformation of the needed file and therefore detected the wrong occupation. Finally, in four miscellaneous cases users described their former occupation in a non-trivially detectable way.
 
 These results confirm that our distant supervision method yields enough correctly labeled data for our research, even though it is far from perfect. Possible future improvements of the method will follow in the \textit{Future Work} section of \autoref{conclusion}.
 
-% TODO: ADD LINKS TO CHAPTERS
 % TODO: ADD SLOAN TO EVAL CRITERIA?
 
 \section{Processing}
+\label{sec:processing}
 Concerning the users, after extracting users with a known occupation from the twitter2 corpus a number of processing steps are involved to bring the entire group of 36113 users to a manageable number of suitable users. First, users that no longer exist, have their profile set as private or have less than 1000 tweets are removed to ensure we can get enough data per user for our research. The users are checked by using the Lookup API of Twitter, which allows us to check users in batches of 100. The remaining users are saved in a Python dictionary and written to disk with the built-in Pickle library. Afterwards, the remaining users are divided in the chosen income classes. From each class 1500 users are randomly selected for further processing by using the random.choice function of the NumPy Python library \citep{numpy}. For these users, their latest 1000 tweets are collected. Retweets and non-Dutch tweets were discarded. The language classification of each tweet was performed by the langid Python library \citep{langid}. Users with less than 500 suitable tweets were left out of the data set. For all remaining users the tweets are written to a text file per user per class. From the remaining set of users, 1000 were randomly selected per group to be used in our research.
 
 After the processing of the users is completed, the tweets are prepared for further use. URL's, hashtags and usernames are removed and the tweets are tokenized so that relevant features can be derived from them. The processing relies on the \textit{TweetTokenizer} included in the NLTK Python library \citep{nltk}, a popular library for natural language processing in Python. As some features need to be generated from text tokenized per sentence, all tweets were run through a pre-trained NLTK sentence tokenizer created by \citet{punkt}. It was trained on the Dutch part of the Multilingual Corpus 1 (ECI), particularly on articles from the "De Limburger" newspaper.The resulting data was collected in a dictionary and written to disk with the Pickle library.
@@ -233,11 +231,11 @@ Originally, we planned to implement all of the feature groups used in \citet{fle
 \subsection{Surface}
 From this group, we chose and implemented the following features:
 \begin{itemize}
-\item Length of a user's tweets in words
-\item Length of a user's tweets in characters
-\item Average word length in a user's tweets
-\item Ratio of words longer than 5 characters in a user's tweets
-\item Type-token ratio
+\item Length of a user's tweets in words;
+\item Length of a user's tweets in characters;
+\item Average word length in a user's tweets;
+\item Ratio of words longer than 5 characters in a user's tweets;
+\item Type-token ratio.
 \end{itemize}
 
 As these features mostly rely on counting words and performing some basic calculations, they were relatively easy to implement. They are all based on tokenized tweets without punctuation. The last two features partly overlap with the group of readability features as they are considered predictors of readability \citep{flekova}.
@@ -247,13 +245,13 @@ As these features mostly rely on counting words and performing some basic calcul
 
 The readability metrics included in our research are:
 \begin{itemize}
-\item Automated Readability Index
-\item Coleman-Liau Index
-\item Flesch-Kincaid Grade Level
-\item Flesch Reading Ease
-\item Gunning-Fog Index
-\item LIX Index
-\item SMOG Index
+\item Automated Readability Index;
+\item Coleman-Liau Index;
+\item Flesch-Kincaid Grade Level;
+\item Flesch Reading Ease;
+\item Gunning-Fog Index;
+\item LIX Index;
+\item SMOG Index.
 \end{itemize}
 
 \subsection{N-grams}
@@ -269,7 +267,7 @@ We chose to include unigrams, bigrams and trigrams in our research. They are cou
 
 \section{Classification}
 As stated in the previous chapter, incomes are not available for every occupation, but only for a select number of occupational classes. The machine learning task ahead of us should therefore be framed as classification, instead of regression.
-Handling in the spirit of Flekova et al., we tried to find a classification method that is closest to the methods they have used, despite the difference in prediction task. They used linear regression and vector support regression with an RBF kernel as its non-linear counterpart for comparison. 
+Handling in the spirit of \citet{flekova}, we tried to find a classification method that is closest to the methods they have used, despite the difference in prediction task. They used linear regression and vector support regression with an RBF kernel as its non-linear counterpart for comparison. 
 
 Two classification methods came to mind: a support vector machine (SVM) and logistic regression. We chose to only use the latter. Scikit-learn's documentation on SVM's states that "if the number of features is much greater than the number of samples, the method is likely to give poor performance" \citep{svm}.
 As one of our feature sets is n-grams, one can expect thousands of features while the data set only consists of two thousand samples. We therefore shifted our focus to logistic regression and implemented it in our classifier using scikit-learn's \textit{LogisticRegression} module.
@@ -376,11 +374,11 @@ The opposite is also observed during our tests: combining surface features with 
 
 Now, for determining which classifier is the most effective. The are five setups that showed equal performance, all reaching an F1-score of 0.72. The setups are:
 \begin{itemize}
-\item Surface + Readability + N-grams (n=1-2-3)
-\item Readability + N-grams (n=2-3)
-\item Readability + N-grams (n=1-2)
-\item N-grams (n=1-2-3)
-\item N-grams (n=1-2)
+\item Surface + Readability + N-grams (n=1-2-3);
+\item Readability + N-grams (n=2-3);
+\item Readability + N-grams (n=1-2);
+\item N-grams (n=1-2-3);
+\item N-grams (n=1-2).
 \end{itemize}
 
 As we prefer the most effective setup, the N-grams (n=1-2) setup provides the best performance with the least amount of features. Although N-grams produce a lot of individual features, they can be easily generated, in contrast with many other features. The wealth of individual features present in this setup is probably the reason it performed so well, despite them being very rudimentary data points without any inherent value.
@@ -395,23 +393,23 @@ We started our research with the question: \textit{to what extent is it possible
 
 As there had not been any comparable study on Dutch users, we had to create a dataset from scratch. By employing the labeling strategy established by \citet{sloan}, we were able to create a corpus of 21862 users with known incomes. They were divided into two two income classes, one above and one below \euro 34.500. From each class thousand users were selected for further research. Their 500 latest tweets were preprocessed for use in our classifier.
 
-In order to classify our users we employed a logisitic regression method provided by Scikit-learn \citep(sklearn) with three sets of features: surface, readability and n-gram features. After testing a host of different feature group combinations on our classifier we managed to get a maximum F1-score of 0.72 using 10-fold cross validation, beating our baseline F1 of 0.5. The feature set with only unigrams and bigrams proved the most effective, providing the highest F1 score with the least amount of features.
+In order to classify our users we employed a logistic regression method provided by scikit-learn \citep{sklearn} with three sets of features: surface, readability and n-gram features. After testing a host of different feature group combinations on our classifier we managed to get a maximum F1-score of 0.72 using 10-fold cross validation, beating our baseline F1 of 0.5. The feature set with only unigrams and bigrams proved the most effective, providing the highest F1 score with the least amount of features.
 
-The set with surface and readability features combined does deserve special consideration. Although it does not perform as well as the unigrams and bigrams, it comes close with an F1 score of .69, using only twelve individual features. In enviroments were resources or time is limited, this setup may prove a very interesting option.
+The set with surface and readability features combined does deserve special consideration. Although it does not perform as well as the unigrams and bigrams, it comes close with an F1 score of .69, using only twelve individual features. In environments were resources or time is limited, this setup may prove a very interesting option.
 
 \section{Limitations}
 As our study was limited in the time and resources available it is far from conclusive. We will describe a few of its limitation below.
 
 \subsection{Availability of income data}
-The first important limitation of our study is the level of detail in the income data used to label our users. As Statistics Netherlands does not provide incomes for all occupations, we were forced to use and predict income classes instead of individual incomes. By using the average incomes for each two-digit group there is a possibility that there is a large gap between the predicted income and the actual income of a user, which might lead to erroneous classifications. As we have no full income data, we cannot assess the size of the problem at this time.
+The first important limitation of our study is the level of detail in the income data used to label our users. As Statistics Netherlands does not provide incomes for all occupations, we were forced to use and predict income classes instead of individual incomes. By using the average incomes for each two-digit group, there is a possibility that there is a large gap between the predicted income and the actual income of a user. This might lead to erroneous classifications. As we have no full income data, we cannot assess the size of the problem at this time.
 
 \subsection{Labeling strategy}
 Our labeling strategy worked reasonably well, as demonstrated by the random survey in \autoref{datagathering}. However, it is far from perfect. One problem is that is cannot distinguish between human and non-human users. Although this is such a complex topic that it would warrant a separate study, adding this capability would help to reduce the noise in our dataset. Another problem is that out labeling method relies on just one heuristic: it will always take the first occupation it can find, even if there are multiple occupations mentioned by a user. It currently has no way to disambiguate between multiple occupations. We will present possibilities for future research on our labeling strategy in the next section.
 
 \subsection{Class and classifier setup}
-We originally planned to use two different class setups: a two class setting with high and low classes and a six class setting used by Statistics Netherlands in their research (\euro 0 - \euro 10.000, \euro 10.000 - \euro 20.000, \euro 20.000 - \euro 30.000, \euro 30.000 - \euro 40.000, \euro 40.000 - \euro 50.000 and \euro 50.000 or more). As our data gathering and annotation efforts proved quite challenging, given that there was no prior gathering and annotation method for Dutch users, we decided to limit ourselves to the two class setting only.
+We originally planned to use two different class setups: a two class setting with high and low classes and a six class setting used by Statistics Netherlands in their research (\euro 0 - \euro 10.000, \euro 10.000 - \euro 20.000, \euro 20.000 - \euro 30.000, \euro 30.000 - \euro 40.000, \euro 40.000 - \euro 50.000 and \euro 50.000 or more). As our data gathering and annotation efforts proved quite challenging, given that there was no prior gathering and annotation method for Dutch users, we decided to limit ourselves to the two class setting.
 
-For the same reason, we had to limit our exploration of different classifier setups. We planned to do a thorough review like\citet{flekova} where each individual feature was measured on its predictiveness using two different regression methods. We limited ourselves to one classification method, logistic regression, as the documentation of scikit-learn indicated that support vector machines would likely give poor performance on our feature sets \citep{svm}. This would have mainly affected setups with n-gram features. Exploration of different classification methods may prove worthwhile in improving results.
+For the same reason, we had to limit our exploration of different classifier setups. We planned to do a thorough review like \citet{flekova}, where each individual feature was measured on its predictiveness using two different regression methods. We limited ourselves to one classification method, logistic regression, as the documentation of scikit-learn indicated that support vector machines would likely give poor performance on our feature sets \citep{svm}. This would have mainly affected setups with n-gram features. Exploration of different classification methods may prove worthwhile in improving results.
 
 Regarding the included features, we only assessed the influence of different feature set combinations, including different levels of n-grams as they greatly influence the amount of features available to our classifier. This limited assessment already yielded 31 distinct feature group combinations to be evaluated. As this proved time consuming, more detailed evaluations had to be left out.
 
@@ -451,6 +449,49 @@ This study has been a first exploration of the possibilities of profiling Dutch 
 
 \newpage
 \section{List of average hourly incomes for each occupation class}
+\begin{table}[h]
+\centering
+\label{appendix:income}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Income class & Average hourly income (\euro) \\ \midrule
+11 & 43.02 \\
+12 & 39.95 \\
+13 & 35.77 \\
+14 & 22.86 \\
+21 & 29.10 \\
+22 & 30.91 \\
+23 & 28.40 \\
+24 & 31.50 \\
+25 & 28.45 \\
+26 & 28.30 \\
+31 & 26.33 \\
+32 & 21.72 \\
+33 & 25.42 \\
+34 & 20.42 \\
+35 & 24.80 \\
+41 & 19.42 \\
+42 & 16.96 \\
+43 & 22.24 \\
+44 & 18.90 \\
+51 & 15.74 \\
+52 & 16.24 \\
+53 & 19.12 \\
+54 & 20.65 \\
+61 & 16.12 \\
+71 & 20.60 \\
+72 & 19.17 \\
+73 & 19.07 \\
+74 & 19.45 \\
+75 & 17.73 \\
+81 & 17.71 \\
+83 & 17.52 \\
+91 & 13.89 \\
+93 & 15.28 \\
+94 & 13.23 \\
+96 & 17.03 \\ \bottomrule
+\end{tabular}
+\end{table}
 
 \newpage
 \section{List of commands for using our toolset}
