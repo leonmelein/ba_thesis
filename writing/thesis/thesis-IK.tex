@@ -30,6 +30,7 @@ headinclude,footinclude, % Extra spacing for the header and footer
 ] {book}% {scrartcl}
 \usepackage{eurosym}
 \usepackage{booktabs}
+\usepackage{csvsimple,longtable}
 
 \input{structure.tex} % Include the structure.tex file which specified the document structure and layout
 
@@ -138,7 +139,15 @@ After testing various feature groupings, the classifier was the most effective w
 \markboth{Preface}{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 
-\textit{To be written on Tuesday.}
+I would like to take this opportunity to thank a number of people who have been instrumental to finishing my thesis. 
+First of all, my supervisor Barbara. Thanks to her relentless support and guidance I was able to tackle my research question. Even when my research proved more challenging than expected, she helped me in tackling the problems step by step. 
+
+I also want to thank fellow student Reinard van Dalen for his advice and support. As our thesis subjects partly overlap, it really helped to look at certain problems together and then solve them in the most efficient way possible. And a final thank you to Stijn Eikelboom, who proofread my thesis.
+
+
+Their support could obviously not prevent the toll my thesis took on my keyboard. It broke down while I was writing the first chapters. It turned out to be a worthwhile sacrifice for completing my thesis. 
+
+
 
 
 %----------------------------------------------------------------------------------------
@@ -185,6 +194,7 @@ This second strategy depends a lot less on outside data. It is therefore easier 
 % TODO: FIND OUT HOW TO REPORT STATICTICAL FINDINGS THE RIGHT WAY
 
 \chapter{Data and Material}
+\label{datagathering}
 \section{Collection} 
 The primary data set for this research is a corpus of Dutch Twitter users with their 500 latest tweets, categorized on income class. As there was no suitable data set available off the shelf, a new corpus was created. As a starting point, the University of Groningen (UG) twitter2 corpus was used to gather user profiles. The twitter2 corpus contains all Dutch tweets provided by Twitter's Streaming API, which constitutes a 1 percent representative sample of public messages posted on Twitter. 
 
@@ -203,7 +213,7 @@ Finally, to derive the average yearly income we need to know the average worked 
 
 To evaluate the performance of our distant supervision method a random survey of 100 users per class was taken. Their labels were manually checked in a two class setting as mentioned in the previous subsection. The labels were considered correct if they appeared in the biography of a user, the user was a human and the occupational title was used to indicate paying occupation, not a hobby or study. The accuracy over the whole group of 200 users was 68,5 percent, with 59 percent in the low class and 78 percent in the high class. In 33 cases, the labels were wrong because the account was simply not used by a person but by a company. As there is no surefire way to distinguish between human and non-human users, we disregard these cases. The overall accuracy without these cases is 82 percent. The last few cases that were wrongly labeled consist of hobbies or voluntary work labelled as an occupation (15 cases), occupational titles that got bodged during the transformation of the needed file (11 cases) and four miscellaneous cases, which consist of users describing their former occupation in a non-trivially detectable way.
 
-These results confirm that our distant supervision method yields enough correctly labeled data for our research, even though it is far from perfect. Possible future improvements of the method will follow in the \textit{Future Work} section of the Conclusion chapter.
+These results confirm that our distant supervision method yields enough correctly labeled data for our research, even though it is far from perfect. Possible future improvements of the method will follow in the \textit{Future Work} section of \autoref{conclusion}.
 
 % TODO: ADD LINKS TO CHAPTERS
 % TODO: ADD SLOAN TO EVAL CRITERIA?
@@ -379,6 +389,7 @@ Generating N-grams can however take some time. Given that our setup with only su
 
 
 \chapter{Conclusion}
+\label{conclusion}
 \section{Summary}
 We started our research with the question: \textit{to what extent is it possible to accurately predict the income level of a Dutch Twitter user and which stylometric features are predictive?} Earlier work on English speaking users looked promising. \citet{flekova} concluded that differences in style could be used to "tailor the style of a document without altering its topic to either income or age individually". This matched our hopes for a potential application of this technique: tailoring customer service communication to customers without having to ask them for background information.
 
@@ -395,7 +406,7 @@ As our study was limited in the time and resources available it is far from conc
 The first important limitation of our study is the level of detail in the income data used to label our users. As Statistics Netherlands does not provide incomes for all occupations, we were forced to use and predict income classes instead of individual incomes. By using the average incomes for each two-digit group there is a possibility that there is a large gap between the predicted income and the actual income of a user, which might lead to erroneous classifications. As we have no full income data, we cannot assess the size of the problem at this time.
 
 \subsection{Labeling strategy}
-Our labeling strategy worked reasonably well, as demonstrated by the random survey in chapter 3. However, it is far from perfect. One problem is that is cannot distinguish between human and non-human users. Although this is such a complex topic that it would warrant a separate study, adding this capability would help to reduce the noise in our dataset. Another problem is that out labeling method relies on just one heuristic: it will always take the first occupation it can find, even if there are multiple occupations mentioned by a user. It currently has no way to disambiguate between multiple occupations. We will present possibilities for future research on our labeling strategy in the next section.
+Our labeling strategy worked reasonably well, as demonstrated by the random survey in \autoref{datagathering}. However, it is far from perfect. One problem is that is cannot distinguish between human and non-human users. Although this is such a complex topic that it would warrant a separate study, adding this capability would help to reduce the noise in our dataset. Another problem is that out labeling method relies on just one heuristic: it will always take the first occupation it can find, even if there are multiple occupations mentioned by a user. It currently has no way to disambiguate between multiple occupations. We will present possibilities for future research on our labeling strategy in the next section.
 
 \subsection{Class and classifier setup}
 We originally planned to use two different class setups: a two class setting with high and low classes and a six class setting used by Statistics Netherlands in their research (\euro 0 - \euro 10.000, \euro 10.000 - \euro 20.000, \euro 20.000 - \euro 30.000, \euro 30.000 - \euro 40.000, \euro 40.000 - \euro 50.000 and \euro 50.000 or more). As our data gathering and annotation efforts proved quite challenging, given that there was no prior gathering and annotation method for Dutch users, we decided to limit ourselves to the two class setting only.
@@ -405,6 +416,7 @@ For the same reason, we had to limit our exploration of different classifier set
 Regarding the included features, we only assessed the influence of different feature set combinations, including different levels of n-grams as they greatly influence the amount of features available to our classifier. This limited assessment already yielded 31 distinct feature group combinations to be evaluated. As this proved time consuming, more detailed evaluations had to be left out.
 
 \section{Future work}
+\label{futurework}
 A mayor boost to future work on profile Dutch authors on income would be the availability of incomes on a full four-digit level so individual incomes can be predicted and not just income classes. However, as we depend on Statistics Netherlands for our income data, it is out of our hands. For now, there are three clear avenues for future research using the available data.
 
 \subsection{Improvement of labeling method}
@@ -428,6 +440,21 @@ This study has been a first exploration of the possibilities of profiling Dutch 
 \bibliography{thesis-IK}
 
 
+%----------------------------------------------------------------------------------------
+%	APPENDICES
+%----------------------------------------------------------------------------------------
+\newpage
+\appendix
+\chapter{Appendix}
+\section{List of occupational classes and respective occupational titles}
+
+
+\newpage
+\section{List of average hourly incomes for each occupation class}
+
+\newpage
+\section{List of commands for using our toolset}
+\textit{As I am still cleaning up my code base, I will add this list to the final version of my thesis.}
 \end{document}
 
 
