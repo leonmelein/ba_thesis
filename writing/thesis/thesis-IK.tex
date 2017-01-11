@@ -336,25 +336,25 @@ The classifiers will all be compared to a baseline. As the data set consists of 
 \textbf{5}        & 0.66                   & 0.66                & 0.66              \\
 \textbf{6}        & 0.70                   & 0.70                & 0.70              \\
 \textbf{7}        & 0.69                   & 0.69                & 0.69              \\
-\textbf{8}        & 0.69                   & 0.69                & 0.69              \\
+\textbf{8}        & 0.59                   & 0.59                & 0.59              \\
 
-\textbf{9}         & 0.71                   & 0.71                & 0.71              \\
+\textbf{9}         & 0.72                   & 0.72                & 0.71              \\
 \textbf{10}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{11}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{12}       & 0.71                   & 0.71                & 0.71              \\
-\textbf{13}       & 0.67                   & 0.67                & 0.67              \\
-\textbf{14}       & 0.71                   & 0.70                & 0.70              \\
+\textbf{11}       & 0.71                   & 0.71                & 0.70             \\
+\textbf{12}       & 0.72                   & 0.72                & 0.71              \\
+\textbf{13}       & 0.68                   & 0.68                & 0.67              \\
+\textbf{14}       & 0.69                   & 0.69                & 0.70              \\
 \textbf{15}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{16}       & 0.56                   & 0.56                & 0.56              \\
+\textbf{16}       & 0.57                  & 0.57                & 0.56              \\
 
-\textbf{17}        & 0.59                   & 0.59                & 0.59              \\
-\textbf{18}       & 0.72                   & 0.72                & 0.72              \\
-\textbf{19}       & 0.71                   & 0.71                & 0.71              \\
-\textbf{20}       & 0.72                   & 0.72                & 0.72              \\
-\textbf{21}       & 0.68                   & 0.68                & 0.68              \\
-\textbf{22}       & 0.69                   & 0.69                & 0.69              \\
+\textbf{17}       & 0.71                   & 0.71                & 0.72              \\
+\textbf{18}       & 0.70                   & 0.70                & 0.70              \\
+\textbf{19}       & 0.70                   & 0.70                & 0.71              \\
+\textbf{20}       & 0.71                   & 0.71                & 0.72              \\
+\textbf{21}       & 0.67                   & 0.67                & 0.68              \\
+\textbf{22}       & 0.71                   & 0.70                & 0.69              \\
 \textbf{23}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{24}       & 0.57                   & 0.57                & 0.57              \\
+\textbf{24}       & 0.56                   & 0.56                & 0.57              \\
 
 \textbf{25}       & 0.72                   & 0.72                & 0.72              \\
 \textbf{26}       & 0.70                   & 0.70                & 0.70              \\
@@ -368,14 +368,16 @@ The classifiers will all be compared to a baseline. As the data set consists of 
 
 All evaluation results for the different classifier setups and our baseline method can be found in table \ref{results-overview}. All setups outperformed our baseline, but differ quite a lot in the extent. We will discuss a few interesting findings below.
 
-One interesting observation is that feature groups can be almost equal in performance when acting alone, but can strengthen one another when used together. A good example of this is the combination of surface and readability features. Alone, they show roughly equal performance ($F1_{\text{surface}} = 0.56$,  $F1_{\text{readability}} = 0.57$). As mentioned before, some surface features are also seen as indicative for readability, hence the similarity in performance. Both outperform our baseline method, but just slightly. When we combine them, however, the F1-score climbs to 0.69, which is well above our baseline and not that far away from the best performing setups in our test.
+[New discussion alinea] 
 
-The opposite is also observed during our tests: combining surface features with uni-, bi- and trigrams results in an F1-score of 0.59, whereas that same combination without the readability features reached an F1-score of 0.72. It shows us that finding the right balance between features is crucial for developing a proper classifier. A possible explanation in this particular case, is that the readability features and the trigrams provide contradicting information, which causes our performance to drop. This hypothesis is backed up by the performance of the same setup without trigrams: the F1-score in this case rises back to 0.72.
+%%% One interesting observation is that feature groups can be almost equal in performance when acting alone, but can strengthen one another when used together. A good example of this is the combination of surface and readability features. Alone, they show roughly equal performance ($F1_{\text{surface}} = 0.56$,  $F1_{\text{readability}} = 0.57$). As mentioned before, some surface features are also seen as indicative for readability, hence the similarity in performance. Both outperform our baseline method, but just slightly. When we combine them, however, the F1-score climbs to 0.69, which is well above our baseline and not that far away from the best performing setups in our test.
+
+%%% The opposite is also observed during our tests: combining surface features with uni-, bi- and trigrams results in an F1-score of 0.59, whereas that same combination without the readability features reached an F1-score of 0.72. It shows us that finding the right balance between features is crucial for developing a proper classifier. A possible explanation in this particular case, is that the readability features and the trigrams provide contradicting information, which causes our performance to drop. This hypothesis is backed up by the performance of the same setup without trigrams: the F1-score in this case rises back to 0.72.
 
 Now, it has to be determined which classifier is the most effective. There are five setups that showed equal performance, all reaching an F1-score of 0.72. The setups are:
 \begin{itemize}
 \item Surface + Readability + N-grams (n=1-2-3);
-\item Readability + N-grams (n=2-3);
+\item Readability + N-grams (n=1-2-3);
 \item Readability + N-grams (n=1-2);
 \item N-grams (n=1-2-3);
 \item N-grams (n=1-2).
@@ -394,8 +396,6 @@ We started our research with the question: \textit{to what extent is it possible
 As a comparable study has not been done yet, we had to create a dataset from scratch. By employing the labeling strategy established by \citet{sloan}, we were able to create a corpus of 21862 users with known incomes. They were divided into two income classes, one above and one below \euro 34.500. From each class thousand users were selected for further research. Their 500 latest tweets were preprocessed for use in our classifier.
 
 In order to classify our users we employed a logistic regression method provided by scikit-learn \citep{sklearn} with three sets of features: surface, readability and n-gram features. After testing a host of different feature group combinations on our classifier, we managed to get a maximum F1-score of 0.72 using 10-fold cross validation, beating our baseline F1 of .5. The feature set with only unigrams and bigrams proved to be the most effective, providing the highest F1 score with the least amount of features.
-
-The set with surface and readability features combined does deserve special consideration. Although it does not perform as well as the unigrams and bigrams, it comes close with an F1 score of .69, using only twelve individual features. In environments were resources or time is limited, this setup may prove to be a very interesting option.
 
 \section{Limitations}
 As our study was limited in the time and resources available, it is far from conclusive. We will describe a few of its limitations below.
