@@ -275,112 +275,67 @@ As one of our feature sets is n-grams, one can expect thousands of features, whi
 \section{Evaluation}
 After implementing all features, the performance of the classifier and its composing features is assessed by using $k$-fold cross validation. In our case we apply a $k$ of 10, like \citet{flekova}.
 
-For each fold, the results were printed to screen, including a list of most informative features. After each validation run the precision, recall and F1-scores are calculated in order to compare the different classifier setups. We test a host of different setups in order to find the most effective combination (i.e. giving us the highest F1-score with the least amount of features).  The tested feature compositions are shown in table \ref{evaluation-combinations}.
+For each fold, the results were printed to screen, including a list of most informative features. After each validation run the precision, recall and F1-scores are calculated in order to compare the different classifier setups. We test a host of different setups in order to find the most effective combination (i.e. giving us the highest F1-score with the least amount of features).  The tested feature compositions and their results are shown in  \autoref{results-overview}.
 
 The classifiers will all be compared to a baseline. As the data set consists of two equally large groups, a majority baseline cannot be used. We therefore use a random baseline. Given that there are two classes and they are equal in size, the chance that a single instance belongs to a certain class is 50 percent ($Pcorrect = 0.5$). We rely on scikit-learn's \textit{StratifiedKFold} module to split our data for each of the ten folds. The stratification makes sure that the equality in class size in our data set will be carried through to the individual test and training sets, and thus guarantees that our baseline will be the same on each run.
-
-\begin{table}[]
-\caption{An overview of the classifier setups included in our evaluation.}
-\centering
-\begin{tabular}{llll}
-\hline
-\#          & \textbf{Set 1} & \textbf{Set 2} & \textbf{Set 3}    \\ \hline
-\textbf{1}  & Surface        & Readability    & N-grams (n=1-2-3) \\
-\textbf{2}  & Surface        & Readability    & N-grams (n=2-3)   \\
-\textbf{3}  & Surface        & Readability    & N-grams (n=1-3)   \\
-\textbf{4}  & Surface        & Readability    & N-grams (n=1-2)   \\
-\textbf{5}  & Surface        & Readability    & N-grams (n=3)     \\
-\textbf{6}  & Surface        & Readability    & N-grams (n=2)     \\
-\textbf{7}  & Surface        & Readability    & N-grams (n=1)     \\
-\textbf{8}  & Surface        & Readability    & -                 \\
-\textbf{9}  & Surface        & -              & N-grams (n=1-2-3) \\
-\textbf{10} & Surface        & -                & N-grams (n=2-3)   \\
-\textbf{11} & Surface        & -              & N-grams (n=1-3)   \\
-\textbf{12} & Surface        & -              & N-grams (n=1-2)   \\
-\textbf{13} & Surface        & -              & N-grams (n=3)     \\
-\textbf{14} & Surface        & -              & N-grams (n=2)     \\
-\textbf{15} & Surface        & -              & N-grams (n=1)     \\
-\textbf{16} & Surface        & -              & -                 \\
-\textbf{17} & -              & Readability    & N-grams (n=1-2-3) \\
-\textbf{18} & -              & Readability    & N-grams (n=2-3)   \\
-\textbf{19} & -              & Readability    & N-grams (n=1-3)   \\
-\textbf{20} & -              & Readability    & N-grams (n=1-2)   \\
-\textbf{21} & -              & Readability    & N-grams (n=3)     \\
-\textbf{22} & -              & Readability    & N-grams (n=2)     \\
-\textbf{23} & -              & Readability    & N-grams (n=1)     \\
-\textbf{24} & -              & Readability    & -                 \\
-\textbf{25} & -              & -              & N-grams (n=1-2-3) \\
-\textbf{26} & -              & -                & N-grams (n=2-3)   \\
-\textbf{27} & -              & -               & N-grams (n=1-3)   \\
-\textbf{28} & -              & -               & N-grams (n=1-2)   \\
-\textbf{29} & -              & -              & N-grams (n=3)     \\
-\textbf{30} & -              & -                & N-grams (n=2)     \\
-\textbf{31} & -              & -                & N-grams (n=1)    
-\end{tabular}
-\label{evaluation-combinations}
-\end{table}
-
 
 \chapter{Results and Discussion}
 \begin{table}[]
 \caption{An overview of precision, recall and F1-scores for the different classifier setups.}
 \label{results-overview}
-\begin{tabular}{@{}llll@{}}
+\begin{tabular}{@{}lllll@{}}
 \toprule
-\textbf{Setup} & \textbf{Precision (P)} & \textbf{Recall (R)} & \textbf{F1-score} \\ \midrule
-\textbf{Baseline} & 0.50                   & 0.50                & 0.50              \\
-\textbf{1}        & 0.72                   & 0.72                & 0.72              \\
-\textbf{2}        & 0.69                   & 0.69                & 0.69              \\
-\textbf{3}        & 0.70                   & 0.70                & 0.70              \\
-\textbf{4}        & 0.71                   & 0.71                & 0.71              \\
-\textbf{5}        & 0.66                   & 0.66                & 0.66              \\
-\textbf{6}        & 0.70                   & 0.70                & 0.70              \\
-\textbf{7}        & 0.69                   & 0.69                & 0.69              \\
-\textbf{8}        & 0.59                   & 0.59                & 0.59              \\
-
-\textbf{9}         & 0.72                   & 0.72                & 0.71              \\
-\textbf{10}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{11}       & 0.71                   & 0.71                & 0.70             \\
-\textbf{12}       & 0.72                   & 0.72                & 0.71              \\
-\textbf{13}       & 0.68                   & 0.68                & 0.67              \\
-\textbf{14}       & 0.69                   & 0.69                & 0.70              \\
-\textbf{15}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{16}       & 0.57                  & 0.57                & 0.56              \\
-
-\textbf{17}       & 0.71                   & 0.71                & 0.72              \\
-\textbf{18}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{19}       & 0.70                   & 0.70                & 0.71              \\
-\textbf{20}       & 0.71                   & 0.71                & 0.72              \\
-\textbf{21}       & 0.67                   & 0.67                & 0.68              \\
-\textbf{22}       & 0.71                   & 0.70                & 0.69              \\
-\textbf{23}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{24}       & 0.56                   & 0.56                & 0.57              \\
-
-\textbf{25}       & 0.72                   & 0.72                & 0.72              \\
-\textbf{26}       & 0.70                   & 0.70                & 0.70              \\
-\textbf{27}       & 0.71                   & 0.71                & 0.71              \\
-\textbf{28}       & 0.72                   & 0.72                & 0.72              \\
-\textbf{29}       & 0.68                   & 0.68                & 0.68              \\
-\textbf{30}       & 0.69                   & 0.69                & 0.69              \\
-\textbf{31}       & 0.70                   & 0.70                & 0.70              \\ \bottomrule
+\textit{\#} & \textbf{Setup}                & \textbf{Precision (P)} & \textbf{Recall (R)} &\textbf{F1-score}   \\ \midrule
+1  & Baseline                                  & 0.50           & 0.50        & 0.50 \\
+2  & Surface                                   & 0.56          & 0.56       & 0.56 \\
+3  & Readability                               & 0.57          & 0.57       & 0.57 \\
+4  & N-grams (n=1)                             & 0.70          & 0.70       & 0.70 \\
+5  & N-grams (n=2)                             & 0.69          & 0.69       & 0.69 \\
+6  & N-grams (n=3)                             & 0.68          & 0.68       & 0.68 \\
+7  & N-grams (n=1-2)                           & 0.72          & 0.72       & 0.72 \\
+8  & N-grams (n=1-3)                           & 0.71          & 0.71       & 0.71 \\
+9  & N-grams (n=2-3)                           & 0.70          & 0.70       & 0.70 \\
+10 & N-grams (n=1-2-3)                         & 0.72          & 0.72       & 0.72 \\
+11 & Surface + Readability                     & 0.59          & 0.59       & 0.59 \\
+12 & Surface + N-grams (n=1)                   & 0.70          & 0.70       & 0.70 \\
+13 & Surface + N-grams (n=2)                   & 0.70          & 0.70       & 0.70 \\
+14 & Surface + N-grams (n=3)                   & 0.67          & 0.67       & 0.67 \\
+15 & Readability + N-grams (n=1)               & 0.70          & 0.70       & 0.70 \\
+16 & Readability + N-grams (n=2)               & 0.69          & 0.69       & 0.69 \\
+17 & Readability + N-grams (n=3)               & 0.68          & 0.68       & 0.68 \\
+18 & Surface + N-grams (n=1-2)                 & 0.71          & 0.71       & 0.71 \\
+19 & Surface + N-grams (n=1-3)                 & 0.70          & 0.70       & 0.70 \\
+20 & Surface + N-grams (n=2-3)                 & 0.70          & 0.70       & 0.70 \\
+21 & Surface + N-grams (n=1-2-3)               & 0.71          & 0.71       & 0.71 \\
+22 & Readability + N-grams (n=1-2)             & 0.72          & 0.72       & 0.72 \\
+23 & Readability + N-grams (n=1-3)             & 0.71          & 0.71       & 0.71 \\
+24 & Readability + N-grams (n=2-3)             & 0.70          & 0.70       & 0.70 \\
+25 & Readability + N-grams (n=1-2-3)           & 0.72          & 0.72       & 0.72 \\
+26 & Surface + Readability + N-grams (n=1)     & 0.69          & 0.69       & 0.69 \\
+27 & Surface + Readability + N-grams (n=2)     & 0.70          & 0.70       & 0.70 \\
+28 & Surface + Readability + N-grams (n=3)     & 0.66          & 0.66       & 0.66 \\
+29 & Surface + Readability + N-grams (n=1-2)   & 0.71          & 0.71       & 0.71 \\
+30 & Surface + Readability + N-grams (n=1-3)   & 0.70          & 0.70       & 0.70 \\
+31 & Surface + Readability + N-grams (n=2-3)   & 0.69          & 0.69       & 0.69 \\
+32 & Surface + Readability + N-grams (n=1-2-3) & 0.72          & 0.72       & 0.72 \\ \bottomrule
 \end{tabular}
 \end{table}
 
-All evaluation results for the different classifier setups and our baseline method can be found in table \ref{results-overview}. All setups outperformed our baseline, but differ quite a lot in the extent. 
+All evaluation results for the different classifier setups and our baseline method can be found in \autoref{results-overview}. All setups outperformed our baseline, but differ quite a lot in the extent. 
 
 Overall, it is clear that the n-gram feature groups are by far the best performing. Surface and readability feature groups, either alone or combined, reach an F1-score in the higher fifties, whereas the n-gram feature groups score at least in the higher sixties. It seems that the few features in the surface and readability groups are no match for the large amount of easily generated features introduced into the model by the use of n-grams, despite them being very rudimentary data points without any inherent value.
 
 
 Now, it has to be determined which classifier is the most robust. There are five setups that showed equal performance, all reaching an F1-score of 0.72. The setups are:
 \begin{itemize}
-\item Surface + Readability + N-grams (n=1-2-3);
-\item Readability + N-grams (n=1-2-3);
-\item Readability + N-grams (n=1-2);
-\item N-grams (n=1-2-3);
-\item N-grams (n=1-2).
+\item \#7: N-grams (n=1-2).
+\item \#10: N-grams (n=1-2-3);
+\item \#18: Readability + N-grams (n=1-2);
+\item \#25: Readability + N-grams (n=1-2-3);
+\item \#32: Surface + Readability + N-grams (n=1-2-3);
 \end{itemize}
 
-To see which method is the most robust, the intermediate F1-scores provided by the individual folds of the 10-fold cross validation are used to calculate the standard deviation. We use this measure to determine which setup is the most robust. The calculation of the standard deviations was performed by IBM SPSS, a popular statistical software package. The outcomes can be found in table \ref{standarddev}.
+To see which method is the most robust, the intermediate F1-scores provided by the individual folds of the 10-fold cross validation are used to calculate the standard deviation. We use this measure to determine which setup is the most robust. The calculation of the standard deviations was performed by IBM SPSS, a popular statistical software package. The outcomes can be found in \autoref{standarddev}.
 
 Although all setups have roughly equal minimum and maximum F1-scores, there is some difference in standard deviation. An interesting finding is the negative influence of adding readability or both surface and readability features to the n-gram features. In all cases considered, the n-gram setups have a lower standard deviation than comparable setups with additional features.
 
@@ -392,12 +347,12 @@ The setup with uni-, bi- and trigrams clearly stands out as the most robust meth
 \label{standarddev}
 \begin{tabular}{@{}lllll@{}}
 \toprule
-\textbf{Setup} & \textbf{Minimum} & \textbf{Maximum} & \textbf{Average} & \textbf{Standard deviation} \\ \midrule
-SRN\_123       & 0.68             & 0.75             & 0.72             & 0.02119                     \\
-RN\_123        & 0.69             & 0.74             & 0.72             & 0.01767                     \\
-RN\_12         & 0.68             & 0.75             & 0.72             & 0.02312                     \\
-N\_123         & 0.69             & 0.74             & 0.72             & 0.01581                     \\
-N\_12          & 0.68             & 0.75             & 0.72             & 0.02221                     \\ \bottomrule
+\textbf{\#} & \textbf{Minimum F1} & \textbf{Maximum F1} & \textbf{Average F1} & \textbf{Standard deviation} \\ \midrule
+7                    & 0.68             & 0.75             & 0.72             & 0.02221                     \\
+10                   & 0.69             & 0.74             & 0.72             & 0.01581                     \\
+18                   & 0.68             & 0.75             & 0.72             & 0.02321                    \\
+25                   & 0.69             & 0.74             & 0.72             & 0.01767                     \\
+32                   & 0.68             & 0.75             & 0.72             & 0.02119                     \\ \bottomrule
 \end{tabular}
 \end{table}
 
