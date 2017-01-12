@@ -110,11 +110,11 @@ Supervisor: B. Plank
 \chapter*{Abstract}
 \markboth{Abstract}{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-Income prediction is a relatively undiscovered aspect of author profiling. Early research on English \citep{flekova} linked Twitter users to occupations and their respective average incomes, obtained promising results. There is no comparable research for Dutch speakers yet. In this thesis, we explore to what extent author profiling can predict the income level of Dutch users.
+Income prediction is a relatively undiscovered aspect of author profiling. Early research on English \citep{flekova} linking Twitter users to occupations and their respective average incomes, obtained promising results. There is no comparable research for Dutch speakers yet. In this thesis, we explore to what extent author profiling can predict the income level of Dutch users.
 
 We do so by creating a dataset of 2000 Twitter users. These are divided into two income classes as there currently is no complete income data available for individual occupations in The Netherlands. We use \textit{distant supervision} to annotate users with their occupational class and their income. We then extract a number of surface, readability and n-gram features from the users' posts. Using logistic regression, we try to classify the users on their income class with those features.
 
-After testing various feature groupings, the classifier proved to be the most effective with unigram and bigram features, reaching an F1-score of 0.72. Although this indicates that  profiling can predict a user's income class to a very large extent, this can only be seen as a first indication as the scope of this study is limited. With clear directions for future improvement, we hope that this study may be a stepping stone towards the prediction of individual incomes for Dutch authors.
+After testing various feature groupings, the classifier proved to be the most robust with uni-, bi- and trigram features, reaching an F1-score of 0.72. Although this indicates that profiling can predict a user's income class to a very large extent, this can only be seen as a first indication as the scope of this study is limited. With clear directions for future improvement, we hope that this study may be a stepping stone towards the prediction of individual incomes for Dutch authors.
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
@@ -366,15 +366,12 @@ The classifiers will all be compared to a baseline. As the data set consists of 
 \end{tabular}
 \end{table}
 
-All evaluation results for the different classifier setups and our baseline method can be found in table \ref{results-overview}. All setups outperformed our baseline, but differ quite a lot in the extent. We will discuss a few interesting findings below.
+All evaluation results for the different classifier setups and our baseline method can be found in table \ref{results-overview}. All setups outperformed our baseline, but differ quite a lot in the extent. 
 
-[New discussion alinea] 
+Overall, it is clear that the n-gram feature groups are by far the best performing. Surface and readability feature groups, either alone or combined, reach an F1-score in the higher fifties, whereas the n-gram feature groups score at least in the higher sixties. It seems that the few features in the surface and readability groups are no match for the large amount of easily generated features introduced into the model by the use of n-grams, despite them being very rudimentary data points without any inherent value.
 
-%%% One interesting observation is that feature groups can be almost equal in performance when acting alone, but can strengthen one another when used together. A good example of this is the combination of surface and readability features. Alone, they show roughly equal performance ($F1_{\text{surface}} = 0.56$,  $F1_{\text{readability}} = 0.57$). As mentioned before, some surface features are also seen as indicative for readability, hence the similarity in performance. Both outperform our baseline method, but just slightly. When we combine them, however, the F1-score climbs to 0.69, which is well above our baseline and not that far away from the best performing setups in our test.
 
-%%% The opposite is also observed during our tests: combining surface features with uni-, bi- and trigrams results in an F1-score of 0.59, whereas that same combination without the readability features reached an F1-score of 0.72. It shows us that finding the right balance between features is crucial for developing a proper classifier. A possible explanation in this particular case, is that the readability features and the trigrams provide contradicting information, which causes our performance to drop. This hypothesis is backed up by the performance of the same setup without trigrams: the F1-score in this case rises back to 0.72.
-
-Now, it has to be determined which classifier is the most effective. There are five setups that showed equal performance, all reaching an F1-score of 0.72. The setups are:
+Now, it has to be determined which classifier is the most robust. There are five setups that showed equal performance, all reaching an F1-score of 0.72. The setups are:
 \begin{itemize}
 \item Surface + Readability + N-grams (n=1-2-3);
 \item Readability + N-grams (n=1-2-3);
@@ -383,10 +380,26 @@ Now, it has to be determined which classifier is the most effective. There are f
 \item N-grams (n=1-2).
 \end{itemize}
 
-As we prefer the most effective setup, we chose the N-grams (n=1-2) setup, as it provides the best performance with the least amount of features. Although N-grams produce a lot of individual features, they can be easily generated, in contrast to many other features. The wealth of individual features present in this setup is probably the reason it performed so well, despite them being very rudimentary data points without any inherent value.
-Generating N-grams can however take quite a lot of time. Given that our setup with only surface and readability features reached an F1-score of 0.69, which is very close to the top performing setups, this setup deserves special consideration. It can be a very efficient option in time or resource limited environments, as it only uses twelve individual features, opposed to the thousands of individual features n-grams introduce.
+To see which method is the most robust, the intermediate F1-scores provided by the individual folds of the 10-fold cross validation are used to calculate the standard deviation. We use this measure to determine which setup is the most robust. The calculation of the standard deviations was performed by IBM SPSS, a popular statistical software package. The outcomes can be found in table \ref{standarddev}.
 
-% TODO: ADD ANALYSIS OF UNIGRAMS AND BIGRAMS
+Although all setups have roughly equal minimum and maximum F1-scores, there is some difference in standard deviation. An interesting finding is the negative influence of adding readability or both surface and readability features to the n-gram features. In all cases considered, the n-gram setups have a lower standard deviation than comparable setups with additional features.
+
+The setup with uni-, bi- and trigrams clearly stands out as the most robust method, having a standard deviation of 0.01581. The results make clear that just adding more and more features doesn't necessarily make a method more robust. We can see that the standard deviation drops when we add trigram features to a setup with uni- and trigram features. This improvement is lost when we add even more features, like readability or surface and readability features. 
+
+
+\begin{table}[]
+\caption{An overview of the minimum and maximum F1-scores as well as the standard deviation of each selected setup.}
+\label{standarddev}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Setup} & \textbf{Minimum} & \textbf{Maximum} & \textbf{Average} & \textbf{Standard deviation} \\ \midrule
+SRN\_123       & 0.68             & 0.75             & 0.72             & 0.02119                     \\
+RN\_123        & 0.69             & 0.74             & 0.72             & 0.01767                     \\
+RN\_12         & 0.68             & 0.75             & 0.72             & 0.02312                     \\
+N\_123         & 0.69             & 0.74             & 0.72             & 0.01581                     \\
+N\_12          & 0.68             & 0.75             & 0.72             & 0.02221                     \\ \bottomrule
+\end{tabular}
+\end{table}
 
 \chapter{Conclusion}
 \label{conclusion}
@@ -395,7 +408,7 @@ We started our research with the question: \textit{to what extent is it possible
 
 As a comparable study has not been done yet, we had to create a dataset from scratch. By employing the labeling strategy established by \citet{sloan}, we were able to create a corpus of 21862 users with known incomes. They were divided into two income classes, one above and one below \euro 34.500. From each class thousand users were selected for further research. Their 500 latest tweets were preprocessed for use in our classifier.
 
-In order to classify our users we employed a logistic regression method provided by scikit-learn \citep{sklearn} with three sets of features: surface, readability and n-gram features. After testing a host of different feature group combinations on our classifier, we managed to get a maximum F1-score of 0.72 using 10-fold cross validation, beating our baseline F1 of .5. The feature set with only unigrams and bigrams proved to be the most effective, providing the highest F1 score with the least amount of features.
+In order to classify our users we employed a logistic regression method provided by scikit-learn \citep{sklearn} with three sets of features: surface, readability and n-gram features. After testing a host of different feature group combinations on our classifier, we managed to get a maximum F1-score of 0.72 using 10-fold cross validation, beating our baseline F1 of .5. The feature set with only uni-, bi- and trigrams proved to be the most robust, providing the highest F1 score with the lowest standard deviation.
 
 \section{Limitations}
 As our study was limited in the time and resources available, it is far from conclusive. We will describe a few of its limitations below.
