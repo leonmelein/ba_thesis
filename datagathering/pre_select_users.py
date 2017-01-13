@@ -4,6 +4,14 @@ import numpy
 
 def pre_select_users(userfile="../supportdata/output_files/users_in_classes.pickle", amount=2000,
                      output_dir="../supportdata/output_files/", debug=False):
+    """
+
+    :param userfile:
+    :param amount:
+    :param output_dir:
+    :param debug:
+    :return:
+    """
 
     output_file = "preselected_users.pickle"
     output = output_dir + output_file

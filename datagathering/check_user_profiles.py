@@ -6,6 +6,13 @@ from datagathering.twitterapi import users_lookup, authentication
 
 def check_users(userfile="../supportdata/output_files/labeled_users.pickle",
                 output_dir="../supportdata/output_files/", debug=False):
+    """
+
+    :param userfile:
+    :param output_dir:
+    :param debug:
+    :return:
+    """
 
     output_file = "suitable_users.pickle"
     output = output_dir + output_file
@@ -19,6 +26,7 @@ def check_users(userfile="../supportdata/output_files/labeled_users.pickle",
 
     # API limitation: we can only send 100 id's per request. Instead of splitting our list up manually,
     # we let the program handle it automatically
+    # TODO: change to while loop
     chunks = chunk_list(flattened_values, 100)
     for chunk in chunks:
         userids = ",".join(chunk)

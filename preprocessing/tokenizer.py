@@ -7,6 +7,15 @@ from preprocessing.punctuation import stripper
 
 def tokenize(userfile="../supportdata/output_files/postselected_users.pickle", output_dir="../supportdata/output_files/",
              corpus="../corpus/", amount=500, debug=False):
+    """
+
+    :param userfile:
+    :param output_dir:
+    :param corpus:
+    :param amount:
+    :param debug:
+    :return:
+    """
 
     output_file = "tokenized_users.pickle"
     output = output_dir + output_file
@@ -17,13 +26,14 @@ def tokenize(userfile="../supportdata/output_files/postselected_users.pickle", o
         users = pickle.load(inputfile)
 
     for key, values in users.items():
-        if not debug:
+        if debug:
             print(key, ":", values)
 
         i = 0
         for value in values:
             i += 1
-            print(i)
+            if debug:
+                print(i)
 
             filepath = "{}{}/{}.txt".format(corpus, key, value)
             with open(filepath, "r") as inputfile:

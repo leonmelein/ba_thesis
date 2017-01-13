@@ -26,7 +26,7 @@ def tokenize(tweets):
             else:
                 cleaned_tokens.append(token)
 
-        tokenized_tweets.append([token for token in cleaned_tokens])
+        tokenized_tweets.append(cleaned_tokens)
 
     return tokenized_tweets
 
@@ -34,5 +34,5 @@ if __name__ == '__main__':
     with open('../corpus/high/23366079.txt') as inputfile:
         tweets_in_tokens = tokenize(inputfile.readlines())
 
-        for t in tweets_in_tokens:
-            print(stripper.strip(t))
+    for t in tweets_in_tokens:
+        print(stripper.strip(t))

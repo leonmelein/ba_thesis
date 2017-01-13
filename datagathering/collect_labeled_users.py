@@ -6,6 +6,14 @@ import sys
 
 def collect_labelled_users(data=None, labels="../supportdata/output_files/titles_and_incomes.pickle",
                            output_dir="../supportdata/output_files/", debug=True):
+    """
+
+    :param data:
+    :param labels:
+    :param output_dir:
+    :param debug:
+    :return:
+    """
 
     output_file = "labeled_users.pickle"
     output = output_dir + output_file
@@ -23,7 +31,6 @@ def collect_labelled_users(data=None, labels="../supportdata/output_files/titles
     pattern = re.compile(regex, re.IGNORECASE)
 
     # For every tweet in the input, find its author and try to label it
-    found_occupations = 0
 
     # Determining if data is being put in via stdin or argument
     if data is not None:
@@ -51,7 +58,7 @@ def collect_labelled_users(data=None, labels="../supportdata/output_files/titles
                 users_class_income[userid] = (username, screenname, description, occupation, o_class, income)
 
                 users_processed.append(userid)
-                found_occupations += 1
+
                 if debug and result is not None:
                     print(userid, '\t', occupation)
 
@@ -67,7 +74,6 @@ def collect_labelled_users(data=None, labels="../supportdata/output_files/titles
         pickle.dump(users_class_income, dumpfile)
 
     if debug:
-        print("Found occupations:", found_occupations)
         print("Found users:", len(users_processed))
 
 

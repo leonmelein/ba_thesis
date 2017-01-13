@@ -10,7 +10,8 @@ from machinelearning.featurizers.readability import measures
 
 class Featurizer(TransformerMixin):
     """
-    A featurizer that implements (most of) the surface and readability features used by Flekova et al. (2016)
+    A featurizer that implements (most of) the surface and readability features used by Flekova et al. (2016), as well
+    as n-gram features.
 
     Partly based on an example by B. Plank <https://github.com/bplank/BA-scriptie/blob/master/Combining_features.ipynb>
     """
@@ -33,9 +34,7 @@ class Featurizer(TransformerMixin):
             sentences = text[1]
 
             out_dict = {}
-
-            # NGrams
-            # TODO: evaluate if we want to use ngrams
+            # N-grams
             if "ngrams" in self.feature_set:
                 ngrams = word_ngrams.generate(tweets, ngram=self.word_ngrams, binary=self.binary)
                 out_dict.update(ngrams)

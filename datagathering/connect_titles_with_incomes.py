@@ -6,6 +6,15 @@ import pickle
 
 def connect_titles_with_incomes(titles, incomes="../supportdata/output_files/incomes_per_submajor_group.pickle",
                                 delimit=";", output_dir="../supportdata/output_files/", debug=False):
+    """
+
+    :param titles:
+    :param incomes:
+    :param delimit:
+    :param output_dir:
+    :param debug:
+    :return:
+    """
 
     output_file = "titles_and_incomes.pickle"
     output = output_dir + output_file
@@ -29,7 +38,7 @@ def connect_titles_with_incomes(titles, incomes="../supportdata/output_files/inc
                 if debug:
                     print(submayor_group, "-", raw_occupational_titles, "-", income)
 
-                # For each occupational title, save its submayor group and average yearly income
+                # For each occupational title, save its submajor group and average yearly income
                 for title in raw_occupational_titles:
                         title_class_income[title.lower()] = (submayor_group, income)
 

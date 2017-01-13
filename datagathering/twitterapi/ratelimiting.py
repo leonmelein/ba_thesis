@@ -17,7 +17,7 @@ def handle_response(api_request, available_tokens, debug=False):
                 pass
         return True, available_tokens
 
-    # Handling rate limit by removing exhasted key from pool
+    # Handling rate limit by removing exhausted key from pool
     elif api_request.status_code == 429:
         available_tokens.pop(0)
 

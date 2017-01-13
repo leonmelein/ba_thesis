@@ -5,6 +5,14 @@ import pickle
 
 
 def import_incomes(filename, output_dir="../supportdata/output_files/", average_hours_per_year=1677, delimit=";"):
+    """
+    :param filename:
+    :param output_dir:
+    :param average_hours_per_year:
+    :param delimit:
+    :return:
+    """
+
     output_file = "incomes_per_submajor_group.pickle"
     output = output_dir + output_file
     class_income = {}

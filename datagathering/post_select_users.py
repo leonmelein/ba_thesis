@@ -5,6 +5,16 @@ from numpy.random import seed, choice
 
 def post_select_users(corpus="../corpus/", output_dir="../supportdata/output_files/",
                       income_classes=("low", "high"), amount=1000, debug=False):
+    """
+
+    :param corpus:
+    :param output_dir:
+    :param income_classes:
+    :param amount:
+    :param debug:
+    :return:
+    """
+
 
     output_file = "postselected_users.pickle"
     output = output_dir + output_file

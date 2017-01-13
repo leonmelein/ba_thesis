@@ -3,6 +3,13 @@ import string
 
 
 def strip(tokens, lower=False):
+    """
+
+    :param tokens:
+    :param lower:
+    :return:
+    """
+
     # Removal of punctuation
     punctuation = list(string.punctuation)
     punctuation.append("...")

@@ -8,6 +8,13 @@ from datagathering.twitterapi import authentication, user_timeline
 
 def gather_user_posts(userfile="../supportdata/output_files/preselected_users.pickle",
                       output_dir="../corpus/", debug=False):
+    """
+
+    :param userfile:
+    :param output_dir:
+    :param debug:
+    :return:
+    """
 
     available_auths = authentication.authenticate()
     with open(userfile, "rb") as inputfile:

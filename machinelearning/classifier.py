@@ -141,7 +141,7 @@ def show_most_informative_features(vectorizer, clf, n=5):
 
 
 def kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams="1-2", prefeaturized=False,
-                   ignored_features=[], userfile="../supportdata/output_files/prefeaturized_users.pickle"):
+                    userfile="../supportdata/output_files/prefeaturized_users.pickle"):
     """
     Performs a k-fold validation of the classifier and prints the outcomes to screen.
 
@@ -215,7 +215,7 @@ def kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams
     print("\n===== CLASSIFIER END =====")
 
 def strat_kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams="1-2", prefeaturized=False,
-                   ignored_features=[], userfile="../supportdata/output_files/prefeaturized_users.pickle"):
+                        userfile="../supportdata/output_files/prefeaturized_users.pickle"):
     """
     Performs a k-fold validation of the classifier and prints the outcomes to screen.
 
