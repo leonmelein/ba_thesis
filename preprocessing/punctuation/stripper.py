@@ -4,9 +4,10 @@ import string
 
 def strip(tokens, lower=False):
     """
+    Strips known punctuation characters from tokens.
 
-    :param tokens:
-    :param lower:
+    :param tokens: the individual tokens per tweet (List).
+    :param lower: toggle indicating if all tokens should be lowercased (Bool, default: False).
     :return:
     """
 

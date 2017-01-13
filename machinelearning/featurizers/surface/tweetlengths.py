@@ -1,6 +1,5 @@
 #!/usr/bin/python
 #   Tweet lengths - Léon Melein, s2580861
-#   Implements total tweet length in words and characters, as well was relative word length per user as features
 
 
 def generate(tweets, debug=False):
@@ -11,9 +10,9 @@ def generate(tweets, debug=False):
     -   Total tweet length in characters    (S_TLCH)
     -   Relative word length per user       (S_RWL)
 
-    :param tweets: a List containing a list of tokens per tweet.
-    :param debug: a Bool indicating if debugging information should be printed (default: False).
-    :return: a Dict containing the feature names as keys and calculated lengths as values.
+    :param tweets: a list containing a list of tokens per tweet (List).
+    :param debug: toggle indicating if debugging information should be printed (Bool, default: False).
+    :return: a Dictionary containing the feature names as keys and calculated lengths as values.
     """
     length_in_words = 0
     length_in_chars = 0

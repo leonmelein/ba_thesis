@@ -31,7 +31,7 @@ headinclude,footinclude, % Extra spacing for the header and footer
 \usepackage{eurosym}
 \usepackage{booktabs}
 \usepackage{csvsimple,longtable}
-
+\setcounter{secnumdepth}{5}
 \input{structure.tex} % Include the structure.tex file which specified the document structure and layout
 
 
@@ -410,7 +410,7 @@ This study has been a first exploration of the possibilities of profiling Dutch 
 \appendix
 \chapter{Appendix}
 \section{List of occupational classes and respective occupational titles}
-\textit{As this file is very long, it could not be included in the text. The file is provided in the zip-file included with this submission and is also provided online via: \\ \url{https://www.thesociallions.nl/thesis/} }.
+As this file is very long, it could not be included in the text. The file is provided in the zip-file included with this submission and is also provided online via: \\ \url{https://www.thesociallions.nl/thesis/}.
 
 \newpage
 \section{List of average hourly incomes for each occupation class}
@@ -459,7 +459,103 @@ Income class & Average hourly income (\euro) \\ \midrule
 
 \newpage
 \section{List of commands for using our toolset}
-\textit{As I am still cleaning up my code base, I will add this list to the final version of my thesis.}
+The toolset is divided into three modules: \textit{datagathering}, \textit{preprocessing} and \text{machinelearning}. All included scripts can be imported as a module in a Python script and be used as a user wishes. Full docstrings are provided in the files themselves. The libraries used can be installed by using the included requirements.txt file, using the command \textit{pip install -r requirements.txt}. The commands below list all scripts that can run standalone in order to recreate our setup.
+
+By default, all created files are written to the \textit{output\_files} folder in the \textit{supportdata} directory of the project. Reference output files are provided in the folder \textit{reference\_output} in the same directory.
+
+\subsection{\textbf{Data gathering}}
+All scripts for data gathering can be found in the \textit{datagathering} folder of the project. The description below will guide you through all needed steps to gather the labeled user data.
+
+\subsubsection{Loading income data from a CSV file}
+\textbf{Script}:	import\_incomes.py \\
+\textbf{Default command} python3 import\_incomes.py <path\_to\_input\_file>\\
+\textbf{Input}: a comma separated file with submajor groups in the first column and their respective average hourly incomes in the second column. The file used in my research is \textit{hourly\_income\_per\_submayor\_group.csv}, which is situated in \textit{supportdata/input\_data/}. \\
+\textbf{Output}: a Python dictionary containing the submajor groups as keys and incomes as values, written to disk with Pickle. \\
+\textbf{Comments}: the method uses \textit{; } as delimiter by default, as it is the one used by Microsoft Excel. 
+
+\subsubsection{Connecting occupational titles with the average income for their submajor group}
+\textbf{Script}:	connect\_titles\_with\_incomes.py \\
+\textbf{Default command}: python3 connect\_titles\_with\_incomes.py <path\_to\_input\_file>\\
+\textbf{Input}: a comma separated file with submajor groups in the first column and a comma separated string of example occupational titles in the third column. The file used in my research is \textit{edited\_occupational\_titles.csv}, which is situated in  \textit{supportdata/input\_data/}. \\
+\textbf{Output}: a Python dictionary containing the example occupational titles as keys and a Tuple containing occupational class and income as values, written to disk with Pickle. \\
+\textbf{Comments}: the method uses \textit{; } as delimiter by default, as it is the one used by Microsoft Excel. 
+
+\subsubsection{Collecting users with known incomes from the \textit{twitter2} corpus}
+\textbf{Script}:	collect\_labeled\_users.py \\
+\textbf{Default command}: zcat /net/corpora/twitter2/Tweets/2016/09/2016090{1..5}* | tweet2tab user.id user user.name user.description | python3 collect\_labelled\_users.py\\
+\textbf{Input}: a tab separated user data from the twitter2 corpus, generated with tweet2tab as demonstrated in the above command. We extract the user id, username, full name and description for each user. This data is loaded by default via standard input, but can also be read from a similarly formatted file by calling the script with a parameter containing the input file as first argument. \\
+\textbf{Output}: a Python dictionary containing the user id's as keys and a Tuple containing username, real name,
+     description, found occupation, occupational class and incomes, written to disk with Pickle.\\
+\textbf{Comments}: this script requires output from the \textit{twitter2} corpus formatted with \textit{tweet2tab} or a similar corpus that provided similarly formatted output for use as input data. The \textit{twitter2} corpus can be found on the \textit{Karora} server of the University of Groningen. 
+
+\subsubsection{Removing non-existing users, private users and user with less than thousand tweets}
+\textbf{Script}:	check\_user\_profiles.py \\
+\textbf{Default command}: python3 check\_user\_profiles.py \\
+\textbf{Input}: a Pickle file containing a dictionary with user id's as keys and Tuples with user information as values. This file is generated by the previous script. The file used in my research is \textit{labeled\_users.pickle}, which is situated in  \textit{supportdata/input\_data/}.  \\
+\textbf{Output}:  a Python dictionary containing the user id's as keys and a Tuple containing the user data, written to disk with Pickle. \\
+\textbf{Comments}: to use the Twitter API, we need a set of access tokens. These can be requested at \url{https://dev.twitter.com}. We used six sets of access tokens to speed up our data gathering. The tokens need to be entered in a JSON file named credentials.json, located in the directory \textit{datagathering}/\textit{twitterapi}/\textit{private}. An example file is provided in the same folder.
+
+\subsubsection{Creating two class split of users}
+\textbf{Script}:	create\_income\_classes.py \\
+\textbf{Default command}: python3 create\_income\_classes.py\\
+\textbf{Input}:  a Pickle file containing a dictionary with user id's as keys and Tuples with user information as values, generated by the previous script. The file used in my research is \textit{suitable\_users.pickle}, which is situated in \textit{supportdata/output\_files}. \\
+\textbf{Output}:  a Python dictionary containing the class labels as keys and Lists containing a List per user with its
+    user id as Int and user information in a Tuple, written to disk with Pickle.\\
+\textbf{Comments}: by default, the users are split in a low and high class, respectively with an average yearly income below \euro 34.500 and above.
+
+\subsubsection{Manual evaluation of labels gathered with distant supervision}
+\textbf{Script}:	evaluate\_annotations.py \\
+\textbf{Default command}: python3 evaluate\_annotations.py\\
+\textbf{Input}:  a Pickle file, containing a dictionary with the class labels as keys and Lists containing a List per user with its
+    user id as Int and user information in a Tuple, as generated by the previous script. The file used in my research is \textit{users\_in\_classes.pickle}, which is situated in the \textit{output\_data} folder of \textit{supportdata}. \\
+\textbf{Output}:  the outcomes of the manual evaluation are only printed to screen. \\
+\textbf{Comments}: by default, the script picks 100 users per class. 
+
+\subsubsection{Preselection of user for retrieval of tweets}
+\textbf{Script}:	pre\_select\_users.py \\
+\textbf{Default command}: python3 pre\_select\_users.py\\
+\textbf{Input}:  a Pickle file, containing a dictionary with the class labels as keys and Lists containing a List per user with its
+    user id as Int and user information in a Tuple, as generated by the previous script. The file used in my research is \textit{users\_in\_classes.pickle}, which is situated in the \textit{output\_data} folder of \textit{supportdata}. \\
+\textbf{Output}:  a Python dictionary containing the classes as keys and a List of selected user id's as values, written to disk with Pickle. \\
+\textbf{Comments}: by default, the script picks 2000 users per class. 
+
+\subsubsection{Gathering of user posts}
+\textbf{Script}:	gather\_user\_posts.py \\
+\textbf{Default command}: python3 gather\_user\_posts.py \\
+\textbf{Input}:  a Pickle file, containing a dictionary with the class labels as keys and Lists with the selected user id's as values, as generated by the previous script. The file used in my research is \textit{preselected\_users.pickle}, which is situated in the \textit{output\_data} folder of \textit{supportdata}. \\
+\textbf{Output}:  a corpus of user's tweets, written to text files. Every user has a separate text file with its id in the folder of its class. \\
+\textbf{Comments}: by default, the script loads the latest 1600 tweets of the user. Furthermore, it writes all suitable tweets to disk.
+
+\subsubsection{Selection of users for further research}
+\textbf{Script}:	post\_select\_users.py \\
+\textbf{Default command}: python3 post\_select\_users.py \\
+\textbf{Input}:  a String containing the location of the gathered tweets. By default, this is the \textit{corpus} folder. \\
+\textbf{Output}:  a Python dictionary containing the classes as keys and a List of selected user id's as values, written to disk with Pickle. \\
+\textbf{Comments}: by default, the script picks 1000 users per class.
+
+\subsection{\textbf{Preprocessing}}
+\subsubsection{Preprocessing of users and their tweets}
+\textbf{Script}:	tokenizer.py \\
+\textbf{Default command}: python3 tokenizer.py \\
+\textbf{Input}:  a Pickle file, containing a dictionary with the class labels as keys and Lists with the selected user id's as values, as generated by the previous script.  \\
+\textbf{Output}:  a Python dictionary containing the classes as keys and a List with a Tuple per user, holding all tokens per tweet in a List and sentence tokenized text as a String, written to disk with Pickle. \\
+\textbf{Comments}: punctuation is removed from the tokens, but not from the sentence tokenized text. The punctuation is needed to calculate the readability measures.
+
+\subsection{\textbf{Machine learning}}
+\subsubsection{Generating prefeaturized dictionaries for evaluation}
+\textbf{Script}:	generate\_test\_dicts.py \\
+\textbf{Default command}: python3 generate\_test\_dicts.py \\
+\textbf{Input}:  none.  \\
+\textbf{Output}:  a Python dictionaries containing the different feature setups, written to disk with Pickle. \\
+\textbf{Comments}: we extracted the features before running the evaluation set, as this can be quite time consuming on runtime.
+
+\subsubsection{Evaluation of different feature setupd}
+\textbf{Script}:	evaluation.py \\
+\textbf{Default command}: python3 evaluation.py \\
+\textbf{Input}:  none.  \\
+\textbf{Output}: the outcomes of the cross validation runs are printed to screen. \\
+\textbf{Comments}: the paths to the dictionaries containing the features for every setup by the former script is hardcoded.
+
 \end{document}
 
 

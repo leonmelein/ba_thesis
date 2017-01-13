@@ -9,17 +9,21 @@ from datagathering.twitterapi import authentication, user_timeline
 def gather_user_posts(userfile="../supportdata/output_files/preselected_users.pickle",
                       output_dir="../corpus/", debug=False):
     """
+    Gathers self written Dutch posts for each user in a class. Disregards users with less than 500 suitable posts.
+    The posts are written to a text file with the user id as name in the folder of the the user's income class.
 
-    :param userfile:
-    :param output_dir:
-    :param debug:
-    :return:
+    :param userfile: path to a Pickle file containing a Python dictionary with the class labels as keys and Lists with
+    the selected user id's as values (String, default: ../supportdata/output_files/preselected_users.pickle).
+    :param output_dir: path to output directory (String, default: ../supportdata/output_files).
+    :param debug: toggle to print debugging information (Bool, default: False).
+    :return: None
     """
 
     available_auths = authentication.authenticate()
     with open(userfile, "rb") as inputfile:
         users = pickle.load(inputfile)
 
+    # For each class, collect user posts
     for key in users.keys():
         # Print ID per user
         if debug:
@@ -41,13 +45,15 @@ def gather_user_posts(userfile="../supportdata/output_files/preselected_users.pi
             if userid not in already_collected:
                 applicable_tweets = []
 
-                # Get the latest 1600 tweets per user
+                # Get the latest 1600 tweets per user (8 pages x 200 tweets)
                 for i in range(1, 8):
                     content, available_auths = user_timeline.request(userid, available_auths, i, debug)
 
+                    # If a page exists, load its contents
                     if content is not None:
                         tweets = json.loads(content)
 
+                        # For every tweet on the page, check if it is self written and Dutch
                         for tweet in tweets:
                             post = tweet['text']
                             if post[:2] != "RT" and post != "":
@@ -59,7 +65,7 @@ def gather_user_posts(userfile="../supportdata/output_files/preselected_users.pi
                 if debug:
                     print(userid, "# of suitable tweets:", len(applicable_tweets))
 
-                # If there are enough suitable tweets, write them to disk
+                # If a user has enough suitable tweets, write the user's tweets to disk
                 if len(applicable_tweets) >= 500:
                     with open("{}.txt".format(userid), 'a+') as file_handler:
                         for post in applicable_tweets:

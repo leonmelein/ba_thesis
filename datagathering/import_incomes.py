@@ -4,12 +4,18 @@ import sys
 import pickle
 
 
-def import_incomes(filename, output_dir="../supportdata/output_files/", average_hours_per_year=1677, delimit=";"):
+def import_incomes(file, output_dir="../supportdata/output_files/", average_hours_per_year=1677, delimit=";",
+                   debug=False):
     """
-    :param filename:
-    :param output_dir:
-    :param average_hours_per_year:
-    :param delimit:
+    Imports average hourly incomes for submajor groups from a CSV file and converts them to average yearly incomes.
+    The resulting dictionary, containing user id's as keys and tuples containing username, real name,
+     description, found occupation, occupational class and incomes, is written to disk with Pickle.
+
+    :param file: path to CSV file (String).
+    :param output_dir: path to output directory (String, default: ../supportdata/output_files).
+    :param average_hours_per_year: average hours worked by a Dutch user per year (Int, default: 1677).
+    :param delimit: the field delimiter used in the CSV file (String, default: ;).
+    :param debug: toggle to print debugging information (Bool, default: False).
     :return:
     """
 
@@ -18,7 +24,7 @@ def import_incomes(filename, output_dir="../supportdata/output_files/", average_
     class_income = {}
 
     # Load CSV file with example occupational titles
-    with open(filename, newline='') as csvfile:
+    with open(file, newline='') as csvfile:
         incomes = csv.reader(csvfile, delimiter=delimit)
 
         # For each submajor group, calculate its yearly income and save to disk
@@ -28,11 +34,12 @@ def import_incomes(filename, output_dir="../supportdata/output_files/", average_
             yearly_income = round(hourly_income * average_hours_per_year, 2)
             class_income[submajor_group] = yearly_income
 
-        # Save occupational dict to disk
+        # Save dict with submajor groups and their incomes to disk
         with open(output, 'wb+') as f:
             pickle.dump(class_income, f)
 
-        print(class_income)
+        if debug:
+            print(class_income)
 
 if __name__ == '__main__':
     if len(sys.argv) == 0:

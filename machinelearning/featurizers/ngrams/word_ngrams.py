@@ -1,7 +1,7 @@
+#!/usr/bin/python
+#   Word n-grams - Léon Melein, s2580861
 from collections import defaultdict
 import nltk
-
-PREFIX_WORD_NGRAM = "W:"
 
 
 def generate(tweets, ngram="1-2-3", debug=False, binary=False):
@@ -17,12 +17,16 @@ def generate(tweets, ngram="1-2-3", debug=False, binary=False):
     :return:
     """
 
-    # dictionary that holds features for current instance
+    PREFIX_WORD_NGRAM = "W:"
+
+    # Dictionary that holds features for current instance, using a defaultdict in case we do not use a binary count
     if binary:
         d = {}
     else:
         d = defaultdict(int)
 
+    # For every tweet, generate the requested n-grams and prefix them so they can be easily seen in our most
+    # informative features
     for tweet in tweets:
 
         for n in ngram.split("-"):
@@ -31,7 +35,7 @@ def generate(tweets, ngram="1-2-3", debug=False, binary=False):
                     print(gram)
                 gram = str(n)+PREFIX_WORD_NGRAM + "_".join(gram)
                 if binary:
-                    d[gram] = 1  # binary
+                    d[gram] = 1
                 else:
                     d[gram] += 1
 

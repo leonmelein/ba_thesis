@@ -1,15 +1,14 @@
 #!/usr/bin/python
 #   Type token ratio - Léon Melein, s2580861
-#   Implements the type token ratio per user as a feature
 
 
 def generate(tweets, debug=False):
     """
     Generates the type-token ratio for a user (S_TTR).
 
-    :param tweets: a List containing a list of tokens per tweet.
-    :param debug: a Bool indicating if debugging information should be printed (default: False).
-    :return: a Dict containing the feature name as key and calculated ratio as value.
+    :param tweets: a list containing a list of tokens per tweet (List).
+    :param debug: toggle indicating if debugging information should be printed (Bool, default: False).
+    :return: a Dictionary containing the feature name as key and calculated ratio as value.
     """
 
     individual_types = []

@@ -1,11 +1,7 @@
 #!/usr/bin/python
-# Classifier (in development)
-# Léon Melein, s2580861
-
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.model_selection import KFold
 import numpy as np
 import random
 import pickle
@@ -22,17 +18,22 @@ def perform_classification(X_train, X_test, y_train, y_test, featureset=("ngrams
 
     Partly based on an example by B. Plank <https://github.com/bplank/BA-scriptie/blob/master/Text_analytics.ipynb>
 
-    :param X_train: the training set of users as a numpy array, containing a tuple with tokenized tweets and tokenized
-    sentences from tweets for each user.
-    :param X_test:  the test set of users as a numpy array, containing a tuple with tokenized tweets and tokenized
-    sentences from tweets for each user.
-    :param y_train: the training set of labels as a numpy array.
-    :param y_test: the test set of labels as a numpy array.
-    :return: the labels predicted by the classifier as a list.
+    :param X_train: the training set of users, containing a tuple with tokenized tweets and tokenized
+    sentences from tweets for each user (NumPy Array).
+    :param X_test:  the test set of users, containing a tuple with tokenized tweets and tokenized
+    sentences from tweets for each user (NumPy Array).
+    :param y_train: the training set of labels (NumPy Array).
+    :param y_test: the test set of labels (NumPy Array).
+    :param featureset: list containing the feature sets in case the features should be extracted on runtime (Tuple,
+    default: ("ngrams", "surface", "readability")).
+    :param ngrams: the types of n-grams to be generated in case the features should be extracted on runtime (String,
+    default: "1-2").
+    :param prefeaturized: toggle to indicate if the features were extracted beforehand. In case this parameter is
+     toggled, the feature_set and ngrams parameters will be disregarded (Bool, default: False).
+    :return: the labels predicted by the classifier as a List.
     """
 
     # Choose label for majority baseline (at random, equal class sizes)
-    # TODO: re-evaluate
     majority_label = np.random.choice([0, 1], 1, p=[0.5, 0.5])
     majority_prediction = [majority_label for label in y_test]
 
@@ -140,87 +141,20 @@ def show_most_informative_features(vectorizer, clf, n=5):
             print("\t%.4f\t%-15s\t\t%.4f\t%-15s" % (coef_1, fn_1, coef_2, fn_2))
 
 
-def kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams="1-2", prefeaturized=False,
-                    userfile="../supportdata/output_files/prefeaturized_users.pickle"):
-    """
-    Performs a k-fold validation of the classifier and prints the outcomes to screen.
-
-    :param k: number of validations as Int (default: 1).
-    :return: None
-    """
-
-    # Using 42 as seed to ensure reproducible results
-    # 42? "Answer to the Ultimate Question of Life, The Universe, and Everything" (The Hitchhiker's Guide to the Galaxy)
-    seed = 42
-
-    print("===== CLASSIFIER START =====")
-
-    print("Loading data…")
-    if prefeaturized:
-        data = load_user_data(userfile=userfile)
-    else:
-        data = load_user_data()
-
-    print("- Total # of instances:", len(data))
-
-    # Unpack user data into users and labels for further use
-    users = np.array([users for users, label in data])
-    labels = np.array([label for sentence, label in data])
-
-    if k == 1:
-        # In case of a single run, split the dataset manually at 75% training, 25% test
-        print("Splitting data…")
-        split_point = int(0.75 * len(data))
-        X_train, X_test = users[:split_point], users[split_point:]
-        y_train, y_test = labels[:split_point], labels[split_point:]
-
-        # Check that our train and test instances have both data and labels
-        assert (len(X_train) == len(y_train))
-        assert (len(X_test) == len(y_test))
-        print("- # of train instances: {}\n- # of test instances: {}".format(len(X_train), len(X_test)))
-
-        # Perform the classification task with the split data
-        perform_classification(X_train, X_test, y_train, y_test, featureset=feature_set, ngrams=ngrams,
-                               prefeaturized=prefeaturized)
-
-    else:
-        y_test_total, y_predicted_total = [], []
-
-        # In case of multiple runs, calculate the needed data splits according to the number of runs requested (= k)
-        print("Calculating {}-fold splits…".format(k))
-        kf = KFold(n_splits=k, random_state=seed)
-
-        # For each generated split, create the requested data split and perform the classification task
-        run = 1
-        for train, test in kf.split(users):
-
-            print("\n===== RUN {} OF {} =====".format(run, k))
-            print("Splitting data…")
-            X_train, X_test, y_train, y_test = users[train], users[test], labels[train], labels[test]
-            print("- # of train instances: {}\n- # of test instances: {}".format(len(X_train), len(X_test)))
-
-            # Save the input and output labels of each classifier run
-            y_test_total = y_test_total + y_test.tolist()
-            y_predicted_total = y_predicted_total + perform_classification(X_train, X_test, y_train, y_test,
-                                                                           featureset=feature_set, ngrams=ngrams,
-                                                                           prefeaturized=prefeaturized)
-            run += 1
-
-        print("\n===== FINAL RESULTS =====")
-        # Report the results of our k-fold validation
-        report = classification_report(y_test_total, y_predicted_total, [0, 1], ["low", "high"])
-        print(report)
-        return report
-
-    print("\n===== CLASSIFIER END =====")
-
 def strat_kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), ngrams="1-2", prefeaturized=False,
                         userfile="../supportdata/output_files/prefeaturized_users.pickle"):
     """
     Performs a k-fold validation of the classifier and prints the outcomes to screen.
 
-    :param k: number of validations as Int (default: 1).
-    :return: None
+    :param k: number of validations (Int, default: 1).
+    :param feature_set: list containing the feature sets in case the features should be extracted on runtime (Tuple,
+    default: ("ngrams", "surface", "readability")).
+    :param ngrams: the types of n-grams to be generated in case the features should be extracted on runtime (String,
+    default: "1-2").
+    :param prefeaturized: toggle to indicate if the features were extracted beforehand. In case this parameter is
+     toggled, the feature_set and ngrams parameters will be disregarded (Bool, default: False).
+    :return: None or, in case of multifold validation, a String containing the final classification report of a
+    validation run.
     """
 
     # Using 42 as seed to ensure reproducible results
@@ -287,7 +221,3 @@ def strat_kfold_validate(k=1, feature_set=("ngrams", "surface", "readability"), 
         return report
 
     print("\n===== CLASSIFIER END =====")
-
-
-if __name__ == '__main__':
-    kfold_validate(k=1, prefeaturized=True)

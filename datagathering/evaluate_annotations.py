@@ -7,11 +7,17 @@ import random
 def evaluate_annotations(userfile="../supportdata/output_files/users_in_classes.pickle", amount_per_class=100,
                          debug=False):
     """
+    Manual evaluation of labels gathered by distant supervision. It picks a given amount of labeled users
+    from each class and asks the user if the label is correct. In case it is not, the user can indicate one of five
+    reasons: (1) user is not a person, (2) the occupation is a hobby or voluntary work, (3) the occupation is a study,
+    (4) the occupation is malformed or matches something different than an occupations or (5) a miscellaneous reason.
 
-    :param userfile:
-    :param amount_per_class:
-    :param debug:
-    :return:
+    :param userfile: path to a Pickle file containing a Python dictionary with the class labels as keys and
+    Lists containing a List per user with its user id as Int and user information in a Tuple.
+    (String, default: ../supportdata/output_files/users_in_classes.pickle)
+    :param amount_per_class: the amount of users to be evaluated per class (Int, default: 100).
+    :param debug: toggle to print debugging information (Bool, default: False).
+    :return: None
     """
 
     with open(userfile, "rb") as inputfile:
@@ -22,13 +28,19 @@ def evaluate_annotations(userfile="../supportdata/output_files/users_in_classes.
     not_a_person, hobby_volunteer, study, wrong_occupation, miscellaneous = 0, 0, 0, 0, 0
     wronged_occupation = defaultdict(int)
 
+    # For every class, pick the chosen amount of users and evaluate them
     for key in users.keys():
         values = users[key]
+
+        # Using 42 as seed to ensure reproducible results
+        # "Answer to the Ultimate Question of Life, The Universe, and Everything"
+        # - The Hitchhiker's Guide to the Galaxy
         random.seed(42)
         random.shuffle(values)
 
         if debug:
             print(key)
+
         i = 0
         while i < amount_per_class:
             item = values[i]

@@ -7,7 +7,7 @@ def tokenize(tweets):
     Tokenizes tweets using the TwitterTokenizer from the NLTK library <http://www.nltk.org/api/nltk.tokenize.html>.
     Also removes user handles, URLs and hashtags using simple heuristics.
 
-    :param tweets: A list of tweets for a certain user.
+    :param tweets: the tweets for a certain user (List).
     :return: A list containing all tokenized tweets.
     """
 
@@ -18,6 +18,8 @@ def tokenize(tweets):
     for tweet in tweets:
         cleaned_tokens = []
         tokens = tokenizer.tokenize(tweet)
+
+        # Remove links and hashtags from tokens
         for token in tokens:
             if token[:4] == "http":
                 pass

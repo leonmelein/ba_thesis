@@ -7,13 +7,17 @@ import pickle
 def connect_titles_with_incomes(titles, incomes="../supportdata/output_files/incomes_per_submajor_group.pickle",
                                 delimit=";", output_dir="../supportdata/output_files/", debug=False):
     """
+    Imports example occupation titles for each submajor groups, links them to the average yearly income for their
+    submajor group. The resulting dictionary, containing occupational titles as keys and Tuples with submajor group and
+    yearly income as values, is written to disk with Pickle.
 
-    :param titles:
-    :param incomes:
-    :param delimit:
-    :param output_dir:
-    :param debug:
-    :return:
+    :param titles: path to CSV file with example occupations titles (String).
+    :param incomes: path to a Pickle file containing a dictionary with submajor groups as keys and
+    average yearly incomes as values (String, default: ../supportdata/output_files/incomes_per_submajor_group.pickle).
+    :param delimit: the field delimiter used in the CSV file (String, default: ;).
+    :param output_dir: path to output directory (String, default: ../supportdata/output_files).
+    :param debug: toggle to print debugging information (Bool, default: False).
+    :return: None
     """
 
     output_file = "titles_and_incomes.pickle"
@@ -34,7 +38,6 @@ def connect_titles_with_incomes(titles, incomes="../supportdata/output_files/inc
                 income = class_income[submayor_group]
                 raw_occupational_titles = [x.strip() for x in row[2].split(',')]
 
-                # Print debugging information
                 if debug:
                     print(submayor_group, "-", raw_occupational_titles, "-", income)
 
@@ -53,7 +56,7 @@ def connect_titles_with_incomes(titles, incomes="../supportdata/output_files/inc
         for key, value in title_class_income.items():
             print(key, "-", value)
 
-    # Save occupational dict to disk
+    # Save resulting dictionary to disk
     with open(output, 'wb+') as f:
         pickle.dump(title_class_income, f)
 

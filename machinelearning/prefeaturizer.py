@@ -1,23 +1,21 @@
 #!/usr/bin/python
-#   prefeaturizer.py - Léon Melein, s2580861
-#   <DESCRIPTION>
 from machinelearning.featurizers.Featurizer import Featurizer
-# from machinelearning import classifier
-# import numpy as np
 import pickle
 
 
-def main(userfile="../supportdata/output_files/sentenced_tokenized_users.pickle", ngrams="1-2-3", feature_set=("ngrams", "surface", "readability"),
+def main(userfile="../supportdata/output_files/tokenized_users.pickle", ngrams="1-2-3", feature_set=("ngrams", "surface", "readability"),
          output_dir="../supportdata/output_files/", filename="", debug=False):
     """
-    Loads user data from dictionary with pretokenized user information.
+    Loads user data from dictionary with pretokenized user information and generates features. The resulting
+    dictionary with the classes as keys and a List, holding a dictonary of features per user, as values, is written
+    to disk with Pickle.
 
     Partly based on an example by B. Plank <https://github.com/bplank/BA-scriptie/blob/master/Combining_features.ipynb>
 
     :param userfile: A pickled dictionary containing:
         -   Two income classes as keys: "low" and "high"
-        -   Tokenized tweets and sentence splitted tokenized tweets for user in that class as value
-    :return: a shuffled list of tuples, containing the user data and the labels.
+        -   Tokenized tweets and sentence tokenized tweets for user in that class as value.
+    :return: None.
     """
     output_file = "prefeaturized_users_"+filename+".pickle"
     output = output_dir + output_file
@@ -27,6 +25,7 @@ def main(userfile="../supportdata/output_files/sentenced_tokenized_users.pickle"
     with open(userfile, "rb") as inputfile:
         userdata = pickle.load(inputfile)
 
+    # For every class, transform the user data to a dictionary containing every feature and save that dictionary
     for key, values in userdata.items():
         if debug:
             print(key)
@@ -34,6 +33,7 @@ def main(userfile="../supportdata/output_files/sentenced_tokenized_users.pickle"
         prefeaturized_data = featurizer.transform(values)
         prefeatured_users[key] = prefeaturized_data
 
+    # Write dictionary with features to disk
     if debug:
         print("Saving...")
     with open(output, "wb+") as outputfile:

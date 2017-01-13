@@ -1,6 +1,5 @@
 #!/usr/bin/python
-#   > Five letter words ratio - Léon Melein, s2580861
-#   Calculates the ratio of word occurances longer than 5 characters in all words used by a user
+#   Five letter words ratio - Léon Melein, s2580861
 
 
 def generate(tweets, debug=False):

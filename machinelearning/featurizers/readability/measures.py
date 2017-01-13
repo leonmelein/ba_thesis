@@ -1,6 +1,5 @@
 #!/usr/bin/python
 #   Readability measures - Léon Melein, s2580861
-#   Generates a number of popular readability measures for a given user's tweets
 #   Relies on the readability library <https://pypi.python.org/pypi/readability> for measure calculation
 
 import readability
