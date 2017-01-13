@@ -321,7 +321,7 @@ The classifiers will all be compared to a baseline. As the data set consists of 
 
 All evaluation results for the different classifier setups and our baseline method can be found in \autoref{results-overview}. All setups outperformed our baseline, but the extent differs quite a lot. 
 
-Overall, it is clear that the n-gram feature groups are by far performing the best. Surface and readability feature groups, either alone or combined, reach an F1-score in the higher fifties, whereas the n-gram feature groups score at least in the higher sixties. It seems that the limited scope of features provided by the surface and readability sets is extensively outweighed by the n-gram sets. 
+Overall, it is clear that the n-gram feature groups are by far performing the best. Surface and readability feature groups, either alone or combined, reach an F1-score in the higher fifties, whereas the n-gram feature groups score at least in the higher sixties. It seems that the limited scope of features, provided by the surface and readability sets, is extensively outweighed by the n-gram sets. 
 
 Now, it has to be determined which classifier is the most robust. There are five setups that showed equal performance, all reaching an F1-score of 0.72. These setups are:
 \begin{itemize}
@@ -332,9 +332,9 @@ Now, it has to be determined which classifier is the most robust. There are five
 \item \#32: Surface + Readability + N-grams (n=1-2-3);
 \end{itemize}
 
-In order to draw conclusions on robustness, the standard deviations of the intermediate F1-scores provided by the individual folds of the 10-fold cross validation are calculated. The calculation was performed by IBM SPSS, a popular statistical software package. The outcomes can be found in \autoref{standarddev}.
+In order to draw conclusions on robustness, the standard deviations of the intermediate F1-scores, provided by the individual folds of the 10-fold cross validation, are calculated. The calculation was performed by IBM SPSS, a popular statistical software package. The outcomes can be found in \autoref{standarddev}.
 
-Although all setups lead to roughly equal minimum and maximum F1-scores, there is some difference in standard deviation. An interesting finding is the negative influence of adding readability or both surface and readability features to the n-gram features. In all cases considered, the n-gram setups have a lower standard deviation than comparable setups with additional features.
+Although all setups yield roughly equal minimum and maximum F1-scores, there is some difference in standard deviation. An interesting finding is the negative influence of adding readability or both surface and readability features to the n-gram features. In all cases considered, the n-gram setups have a lower standard deviation than comparable setups with additional features.
 
 The setup with uni-, bi- and trigrams clearly stands out as the most robust method, having a standard deviation of 0.01581. The results make clear that simply adding more and more features does not necessarily have a positive effect on a method's robustness. We can see that the standard deviation drops when we add trigram features to a setup with uni- and trigram features. This improvement is diminished when we add even more features, like readability or both surface and readability features. 
 
